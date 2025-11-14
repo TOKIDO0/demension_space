@@ -7,8 +7,9 @@ module.exports = async (req, res) => {
     if (!name || !phone || !message || !from) return res.status(400).json({ error: 'missing_fields' });
     const apiKey = process.env.RESEND_API_KEY;
     const to = process.env.CONTACT_EMAIL;
+    const fromAddr = process.env.CONTACT_FROM || 'onboarding@resend.dev';
     if (!apiKey || !to) return res.status(500).json({ error: 'server_not_configured' });
-    const payload = JSON.stringify({ from: `Dimension Space <no-reply@dimensionspace.app>`, to, subject: `新的联系表单 - ${name}`, html: `<p>发件人邮箱：${from}</p><p>姓名：${name}</p><p>电话：${phone}</p><p>内容：</p><pre>${message}</pre>` });
+    const payload = JSON.stringify({ from: fromAddr, to, subject: `新的联系表单 - ${name}`, html: `<p>发件人邮箱：${from}</p><p>姓名：${name}</p><p>电话：${phone}</p><p>内容：</p><pre>${message}</pre>` });
     const reqOpts = { method: 'POST', hostname: 'api.resend.com', path: '/emails', headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) } };
     const apiReq = https.request(reqOpts, (apiRes) => {
       let data = '';
