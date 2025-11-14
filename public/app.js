@@ -266,7 +266,11 @@ function showModal(modalId) {
             return;
         }
         modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        if (modalId !== 'work-detail-modal') {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
     } catch (error) {
         console.error('显示模态框出错:', error);
     }
