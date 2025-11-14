@@ -33,3 +33,5 @@ next-env.d.ts
 *.db
 *.log
 cs2-learn-firebase-adminsdk-*.json
+*firebase-adminsdk*.json
+/config/src/**
