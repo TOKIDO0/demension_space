@@ -638,7 +638,7 @@ async function handleRegister() {
         showLoadingIndicator();
         const sb = getSupabaseClient();
         if (sb) {
-            const r = await sb.auth.signUp({ email, password, options: { data: { nick_name: username, phone } } });
+            const r = await sb.auth.signUp({ email, password, options: { data: { nick_name: username, phone }, emailRedirectTo: location.origin } });
             if (r.error) { showAuthError(r.error.message || '注册失败'); return; }
         } else if (FRONTEND_ONLY || PREVIEW_MODE) {
             const users = loadUsers();
@@ -715,7 +715,18 @@ async function handleLogin() {
         if (sb) {
             showLoadingIndicator();
             const r = await sb.auth.signInWithPassword({ email, password });
-            if (r.error) { if (String(r.error.message||'').includes('Invalid login')) { showAuthError('密码错误'); } else { showAuthError(r.error.message); } return; }
+            if (r.error) {
+                const msg = String(r.error.message||'');
+                if (msg.toLowerCase().includes('email not confirmed')) {
+                    try { await sb.auth.resend({ type: 'signup', email }); } catch(_) {}
+                    showAuthError('邮箱未验证，已重新发送验证邮件，请完成验证后再登录');
+                } else if (msg.includes('Invalid login')) {
+                    showAuthError('密码错误');
+                } else {
+                    showAuthError(r.error.message);
+                }
+                return;
+            }
             const u = r.data.user;
             const m = u.user_metadata || {};
             currentUser = { id: u.id, email: u.email, username: u.email.split('@')[0], avatar: m.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.email.split('@')[0])}&background=random`, nickName: m.nick_name || u.email.split('@')[0], phone: m.phone || '' };
