@@ -46,7 +46,7 @@ function createLoadingStyles() {
     indicator.style.left = '50%';
     indicator.style.transform = 'translate(-50%, -50%)';
     indicator.style.zIndex = '9999';
-    indicator.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+    indicator.style.backgroundColor = 'rgba(10, 10, 20, 0.6)';
     indicator.style.padding = '20px 40px';
     indicator.style.borderRadius = '8px';
     indicator.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
@@ -1985,11 +1985,9 @@ async function handleContactFormSubmit(event) {
 }
 
 // 鍒濆鍖栭〉闈?async function initPage() {
+    showLoadingIndicator();
     try {
         console.log('寮€濮嬮〉闈㈠垵濮嬪寲...');
-        
-        // 鏄剧ず鍔犺浇鐘舵€佹寚绀哄櫒
-        showLoadingIndicator();
         
         // 鎭㈠鏈湴浼氳瘽
         const saved = loadSession();
@@ -2005,9 +2003,6 @@ async function handleContactFormSubmit(event) {
         await initWorksManagement();
         
         console.log('椤甸潰鍒濆鍖栧畬鎴?);
-        
-        // 椤甸潰鍒濆鍖栧畬鎴愬悗闅愯棌鍔犺浇鐘舵€佹寚绀哄櫒
-        hideLoadingIndicator();
         
         // 1. 娴忚浣滃搧鎸夐挳 - 骞虫粦婊氬姩鍒扮簿閫変綔鍝佸尯鍩?        const browseWorksBtn = document.getElementById('browse-works-btn');
         if (browseWorksBtn) {
@@ -2109,10 +2104,10 @@ async function handleContactFormSubmit(event) {
         
     } catch (error) {
         console.error('椤甸潰鍒濆鍖栧嚭閿?', error);
-        // 闅愯棌鍔犺浇鐘舵€佹寚绀哄櫒
-        hideLoadingIndicator();
         // 鏄剧ず閿欒淇℃伅
         alert('椤甸潰鍔犺浇澶辫触锛岃鍒锋柊椤甸潰閲嶈瘯');
+    } finally {
+        // 纭繚鏃犺鏄惁鍑洪敊閮介殣钘忓姞杞芥寚绀哄櫒锛岄伩鍏嶇櫧灞?        hideLoadingIndicator();
     }
 }
 
