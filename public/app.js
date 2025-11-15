@@ -8,6 +8,9 @@ function getSupabaseClient(){ try { const url = (typeof window !== 'undefined' &
 const PREVIEW_MODE = false;
 const FRONTEND_ONLY = !API_BASE;
 
+try { document.addEventListener('DOMContentLoaded', function(){ try { if (!document.body.style.backgroundColor) document.body.style.backgroundColor = '#0a0a14'; if (!document.body.style.color) document.body.style.color = '#ffffff'; } catch(_){} }); } catch(_){}
+try { window.addEventListener('error', function(){ try { hideLoadingIndicator(); } catch(_){} }); } catch(_){}
+
 // 鍒涘缓鍔犺浇鍔ㄧ敾鏍峰紡
 function createLoadingStyles() {
     const style = document.createElement('style');
