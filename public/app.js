@@ -1,5 +1,5 @@
-// 全新的JavaScript文件
-console.log('app.js 加载成功');
+// 鍏ㄦ柊鐨凧avaScript鏂囦欢
+console.log('app.js 鍔犺浇鎴愬姛');
 
 const API_BASE = '';
 const SUPABASE_URL = 'https://afrasbvtsucsmddcdusi.supabase.co';
@@ -8,7 +8,7 @@ function getSupabaseClient(){ try { const url = (typeof window !== 'undefined' &
 const PREVIEW_MODE = false;
 const FRONTEND_ONLY = !API_BASE;
 
-// 创建加载动画样式
+// 鍒涘缓鍔犺浇鍔ㄧ敾鏍峰紡
 function createLoadingStyles() {
     const style = document.createElement('style');
     style.textContent = `
@@ -34,13 +34,12 @@ function createLoadingStyles() {
     document.head.appendChild(style);
 }
 
-// 创建加载指示器元素
-function createLoadingIndicator() {
+// 鍒涘缓鍔犺浇鎸囩ず鍣ㄥ厓绱?function createLoadingIndicator() {
     const indicator = document.createElement('div');
     indicator.className = 'loading-indicator';
     indicator.innerHTML = `
         <div class="loading-spinner"></div>
-        <p>加载中...</p>
+        <p>鍔犺浇涓?..</p>
     `;
     indicator.style.position = 'fixed';
     indicator.style.top = '50%';
@@ -59,11 +58,9 @@ function createLoadingIndicator() {
     return indicator;
 }
 
-// 全局加载指示器
-let loadingIndicator = null;
+// 鍏ㄥ眬鍔犺浇鎸囩ず鍣?let loadingIndicator = null;
 
-// 显示加载指示器
-function showLoadingIndicator() {
+// 鏄剧ず鍔犺浇鎸囩ず鍣?function showLoadingIndicator() {
     if (!loadingIndicator) {
         createLoadingStyles();
         loadingIndicator = createLoadingIndicator();
@@ -72,14 +69,13 @@ function showLoadingIndicator() {
     loadingIndicator.style.display = 'flex';
 }
 
-// 隐藏加载指示器
-function hideLoadingIndicator() {
+// 闅愯棌鍔犺浇鎸囩ず鍣?function hideLoadingIndicator() {
     if (loadingIndicator) {
         loadingIndicator.style.display = 'none';
     }
 }
 
-// 全局变量存储用户信息
+// 鍏ㄥ眬鍙橀噺瀛樺偍鐢ㄦ埛淇℃伅
 let currentUser = null;
 
 function loadUsers() { return {}; }
@@ -105,7 +101,7 @@ function validateNickname(nick) {
 
 async function updateUserProfile(patch) {
     const payload = Object.assign({}, patch);
-    if (!currentUser || !currentUser.username) throw new Error('未登录');
+    if (!currentUser || !currentUser.username) throw new Error('鏈櫥褰?);
     payload.username = currentUser.username;
     if (currentUser.id) payload.id = currentUser.id;
     payload.email = currentUser.email;
@@ -114,17 +110,17 @@ async function updateUserProfile(patch) {
         const sb = getSupabaseClient();
         if (sb) {
             const u = await sb.auth.getUser();
-            if (u.error) throw new Error('未登录');
+            if (u.error) throw new Error('鏈櫥褰?);
             const data = { nick_name: payload.nickName ?? currentUser.nickName, phone: payload.phone ?? currentUser.phone, avatar_url: payload.avatar ?? currentUser.avatar };
             const r = await sb.auth.updateUser({ data });
-            if (r.error) throw new Error(r.error.message || '保存失败');
+            if (r.error) throw new Error(r.error.message || '淇濆瓨澶辫触');
             const u2 = r.data.user;
             const m2 = u2.user_metadata || {};
             currentUser = { id: u2.id, email: u2.email, username: u2.email.split('@')[0], avatar: m2.avatar_url || currentUser?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(u2.email.split('@')[0])}&background=random`, nickName: m2.nick_name || currentUser?.nickName || u2.email.split('@')[0], phone: m2.phone || currentUser?.phone || '' };
             updateUIForLoggedInState();
-            return { code: '0', msg: '成功' };
+            return { code: '0', msg: '鎴愬姛' };
         } else {
-            throw new Error('后端未配置');
+            throw new Error('鍚庣鏈厤缃?);
         }
     } finally {
         hideLoadingIndicator();
@@ -132,18 +128,18 @@ async function updateUserProfile(patch) {
 }
 
 async function changeUserPassword(oldPwd, newPwd) {
-    if (!currentUser || !currentUser.username) throw new Error('未登录');
+    if (!currentUser || !currentUser.username) throw new Error('鏈櫥褰?);
     showLoadingIndicator();
     try {
         const sb = getSupabaseClient();
         if (sb) {
             const re = await sb.auth.signInWithPassword({ email: currentUser.email, password: oldPwd });
-            if (re.error) throw new Error('密码错误');
+            if (re.error) throw new Error('瀵嗙爜閿欒');
             const r = await sb.auth.updateUser({ password: newPwd });
-            if (r.error) throw new Error(r.error.message || '修改密码失败');
-            return { code: '0', msg: '成功' };
+            if (r.error) throw new Error(r.error.message || '淇敼瀵嗙爜澶辫触');
+            return { code: '0', msg: '鎴愬姛' };
         } else {
-            throw new Error('后端未配置');
+            throw new Error('鍚庣鏈厤缃?);
         }
     } finally {
         hideLoadingIndicator();
@@ -185,7 +181,7 @@ async function uploadAvatarAndSave(file) {
         const sb = getSupabaseClient();
         if (sb) {
             const u = await sb.auth.getUser();
-            if (u.error) throw new Error('未登录');
+            if (u.error) throw new Error('鏈櫥褰?);
             const name = `${u.data.user.id}/${Date.now()}.jpg`;
             const up = await sb.storage.from('avatars').upload(name, blob, { upsert: true });
             if (up.error) {
@@ -209,7 +205,7 @@ async function uploadAvatarAndSave(file) {
             currentUser.avatar = url;
             return url;
         } else {
-            throw new Error('后端未配置');
+            throw new Error('鍚庣鏈厤缃?);
         }
     } finally {
         hideLoadingIndicator();
@@ -247,22 +243,22 @@ function animateScrollTo(targetY, duration = 500, onComplete = null) {
 function smoothScrollTo(elementId, offset = 0, onComplete = null) {
     try {
         const element = document.getElementById(elementId);
-        if (!element) { console.warn(`目标元素 #${elementId} 未找到`); return; }
+        if (!element) { console.warn(`鐩爣鍏冪礌 #${elementId} 鏈壘鍒癭); return; }
         const elementTop = element.getBoundingClientRect().top;
         let target = elementTop + window.pageYOffset - offset;
         const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
         if (target > max) target = max;
         if (target < 0) target = 0;
         animateScrollTo(target, 500, onComplete);
-    } catch (error) { console.error('平滑滚动出错:', error); }
+    } catch (error) { console.error('骞虫粦婊氬姩鍑洪敊:', error); }
 }
 
-// 显示模态框函数
+// 鏄剧ず妯℃€佹鍑芥暟
 function showModal(modalId) {
     try {
         const modal = document.getElementById(modalId);
         if (!modal) {
-            console.warn(`模态框 #${modalId} 未找到`);
+            console.warn(`妯℃€佹 #${modalId} 鏈壘鍒癭);
             return;
         }
         modal.classList.add('active');
@@ -272,23 +268,23 @@ function showModal(modalId) {
             document.body.style.overflow = '';
         }
     } catch (error) {
-        console.error('显示模态框出错:', error);
+        console.error('鏄剧ず妯℃€佹鍑洪敊:', error);
     }
 }
 
-// 隐藏模态框函数
+// 闅愯棌妯℃€佹鍑芥暟
 function hideModal(modalId) {
     try {
         const modal = document.getElementById(modalId);
         if (!modal) {
-            console.warn(`模态框 #${modalId} 未找到`);
+            console.warn(`妯℃€佹 #${modalId} 鏈壘鍒癭);
             return;
         }
         modal.classList.remove('active');
         document.body.style.overflow = '';
         if (modalId === 'auth-modal' && authLiquid) { authLiquid.destroy(); authLiquid = null; }
     } catch (error) {
-        console.error('隐藏模态框出错:', error);
+        console.error('闅愯棌妯℃€佹鍑洪敊:', error);
     }
 }
 
@@ -432,10 +428,9 @@ function attachLiquidGlassToAuthModal() {
     authLiquid = new LiquidGlass({ element: el });
 }
 
-// 初始化认证相关功能
-function initAuth() {
+// 鍒濆鍖栬璇佺浉鍏冲姛鑳?function initAuth() {
     try {
-        // 设置表单切换功能
+        // 璁剧疆琛ㄥ崟鍒囨崲鍔熻兘
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
         const authModalTitle = document.getElementById('auth-modal-title');
@@ -446,26 +441,24 @@ function initAuth() {
         const registerSubmitBtn = document.getElementById('register-submit-btn');
         
         if (switchToRegister && switchToLogin && loginForm && registerForm && authModalTitle) {
-            // 切换到注册表单
-            switchToRegister.addEventListener('click', function(e) {
+            // 鍒囨崲鍒版敞鍐岃〃鍗?            switchToRegister.addEventListener('click', function(e) {
                 e.preventDefault();
                 loginForm.style.display = 'none';
                 registerForm.style.display = 'block';
-                authModalTitle.textContent = '创建新账号';
+                authModalTitle.textContent = '鍒涘缓鏂拌处鍙?;
                 clearAuthError();
             });
             
-            // 切换到登录表单
-            switchToLogin.addEventListener('click', function(e) {
+            // 鍒囨崲鍒扮櫥褰曡〃鍗?            switchToLogin.addEventListener('click', function(e) {
                 e.preventDefault();
                 registerForm.style.display = 'none';
                 loginForm.style.display = 'block';
-                authModalTitle.textContent = '欢迎回来';
+                authModalTitle.textContent = '娆㈣繋鍥炴潵';
                 clearAuthError();
             });
         }
         
-        // 关闭模态框
+        // 鍏抽棴妯℃€佹
         if (closeAuthModal) {
             closeAuthModal.addEventListener('click', function() {
                 hideModal('auth-modal');
@@ -487,11 +480,11 @@ function initAuth() {
         }
         
     } catch (error) {
-        console.error('初始化认证功能出错:', error);
+        console.error('鍒濆鍖栬璇佸姛鑳藉嚭閿?', error);
     }
 }
 
-// 显示认证错误信息
+// 鏄剧ず璁よ瘉閿欒淇℃伅
 function showAuthError(message) {
     const errorElement = document.getElementById('auth-error');
     if (errorElement) {
@@ -500,7 +493,7 @@ function showAuthError(message) {
     }
 }
 
-// 清除认证错误信息
+// 娓呴櫎璁よ瘉閿欒淇℃伅
 function clearAuthError() {
     const errorElement = document.getElementById('auth-error');
     if (errorElement) {
@@ -509,15 +502,15 @@ function clearAuthError() {
     }
 }
 
-// 清除认证表单
+// 娓呴櫎璁よ瘉琛ㄥ崟
 function clearAuthForms() {
-    // 清除登录表单
+    // 娓呴櫎鐧诲綍琛ㄥ崟
     const loginEmail = document.getElementById('login-email');
     const loginPassword = document.getElementById('login-password');
     if (loginEmail) loginEmail.value = '';
     if (loginPassword) loginPassword.value = '';
     
-    // 清除注册表单
+    // 娓呴櫎娉ㄥ唽琛ㄥ崟
     const registerUsername = document.getElementById('register-username');
     const registerEmail = document.getElementById('register-email');
     const registerPhone = document.getElementById('register-phone');
@@ -530,24 +523,24 @@ function clearAuthForms() {
     if (registerConfirmPassword) registerConfirmPassword.value = '';
 }
 
-// 表单验证函数
+// 琛ㄥ崟楠岃瘉鍑芥暟
 function setupFormValidation() {
     try {
-        // 登录表单验证 - 当用户输入时进行验证
+        // 鐧诲綍琛ㄥ崟楠岃瘉 - 褰撶敤鎴疯緭鍏ユ椂杩涜楠岃瘉
         const loginEmail = document.getElementById('login-email');
         const loginPassword = document.getElementById('login-password');
         
         if (loginEmail) {
             loginEmail.addEventListener('input', function() {
                 if (!isValidEmail(loginEmail.value) && loginEmail.value.trim()) {
-                    showAuthError('请输入有效的邮箱地址');
+                    showAuthError('璇疯緭鍏ユ湁鏁堢殑閭鍦板潃');
                 } else {
                     clearAuthError();
                 }
             });
         }
         
-        // 注册表单验证
+        // 娉ㄥ唽琛ㄥ崟楠岃瘉
         const registerUsername = document.getElementById('register-username');
         const registerEmail = document.getElementById('register-email');
         const registerPassword = document.getElementById('register-password');
@@ -556,7 +549,7 @@ function setupFormValidation() {
         if (registerUsername) {
             registerUsername.addEventListener('input', function() {
                 if (registerUsername.value.length < 3 && registerUsername.value.trim()) {
-                    showAuthError('用户名至少需要3个字符');
+                    showAuthError('鐢ㄦ埛鍚嶈嚦灏戦渶瑕?涓瓧绗?);
                 } else {
                     clearAuthError();
                 }
@@ -566,7 +559,7 @@ function setupFormValidation() {
         if (registerEmail) {
             registerEmail.addEventListener('input', function() {
                 if (!isValidEmail(registerEmail.value) && registerEmail.value.trim()) {
-                    showAuthError('请输入有效的邮箱地址');
+                    showAuthError('璇疯緭鍏ユ湁鏁堢殑閭鍦板潃');
                 } else {
                     clearAuthError();
                 }
@@ -576,7 +569,7 @@ function setupFormValidation() {
         if (registerPassword) {
             registerPassword.addEventListener('input', function() {
                 if (registerPassword.value.length < 8 && registerPassword.value.trim()) {
-                    showAuthError('密码至少需要8个字符');
+                    showAuthError('瀵嗙爜鑷冲皯闇€瑕?涓瓧绗?);
                 } else {
                     clearAuthError();
                 }
@@ -586,7 +579,7 @@ function setupFormValidation() {
         if (registerConfirmPassword) {
             registerConfirmPassword.addEventListener('input', function() {
                 if (registerPassword && registerConfirmPassword.value !== registerPassword.value) {
-                    showAuthError('两次输入的密码不一致');
+                    showAuthError('涓ゆ杈撳叆鐨勫瘑鐮佷笉涓€鑷?);
                 } else {
                     clearAuthError();
                 }
@@ -594,17 +587,17 @@ function setupFormValidation() {
         }
         
     } catch (error) {
-        console.error('设置表单验证出错:', error);
+        console.error('璁剧疆琛ㄥ崟楠岃瘉鍑洪敊:', error);
     }
 }
 
-// 邮箱验证函数
+// 閭楠岃瘉鍑芥暟
 function isValidEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 }
 
-// 处理用户注册
+// 澶勭悊鐢ㄦ埛娉ㄥ唽
 async function handleRegister() {
     try {
         const registerUsername = document.getElementById('register-username');
@@ -614,7 +607,7 @@ async function handleRegister() {
         const registerConfirmPassword = document.getElementById('register-confirm-password');
         const authErrorElement = document.getElementById('auth-error');
         if (!registerUsername || !registerEmail || !registerPassword || !registerConfirmPassword) {
-            showAuthError('表单初始化失败，请刷新页面重试');
+            showAuthError('琛ㄥ崟鍒濆鍖栧け璐ワ紝璇峰埛鏂伴〉闈㈤噸璇?);
             return;
         }
         const username = registerUsername.value.trim();
@@ -627,29 +620,29 @@ async function handleRegister() {
             const errEl = input.nextElementSibling;
             if (errEl && errEl.classList.contains('error-message')) errEl.remove();
         });
-        if (!username) { showFieldError(registerUsername, '请输入用户名'); showAuthError('请输入用户名'); return; }
-        if (username.length < 3) { showFieldError(registerUsername, '用户名至少需要3个字符'); showAuthError('用户名至少需要3个字符'); return; }
-        if (!/^[a-zA-Z0-9_\u4e00-\u9fa5]+$/.test(username)) { showFieldError(registerUsername, '用户名只能包含字母、数字、下划线和中文'); showAuthError('用户名只能包含字母、数字、下划线和中文'); return; }
-        if (!email || !isValidEmail(email)) { showFieldError(registerEmail, '请输入有效的邮箱地址'); showAuthError('请输入有效的邮箱地址'); return; }
-        if (!password) { showFieldError(registerPassword, '请输入密码'); showAuthError('请输入密码'); return; }
-        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password)) { showFieldError(registerPassword, '至少8位，含大小写和数字'); showAuthError('至少8位，含大小写和数字'); return; }
-        if (!confirmPassword || password !== confirmPassword) { showFieldError(registerConfirmPassword, '两次输入的密码不一致'); showAuthError('两次输入的密码不一致'); return; }
+        if (!username) { showFieldError(registerUsername, '璇疯緭鍏ョ敤鎴峰悕'); showAuthError('璇疯緭鍏ョ敤鎴峰悕'); return; }
+        if (username.length < 3) { showFieldError(registerUsername, '鐢ㄦ埛鍚嶈嚦灏戦渶瑕?涓瓧绗?); showAuthError('鐢ㄦ埛鍚嶈嚦灏戦渶瑕?涓瓧绗?); return; }
+        if (!/^[a-zA-Z0-9_\u4e00-\u9fa5]+$/.test(username)) { showFieldError(registerUsername, '鐢ㄦ埛鍚嶅彧鑳藉寘鍚瓧姣嶃€佹暟瀛椼€佷笅鍒掔嚎鍜屼腑鏂?); showAuthError('鐢ㄦ埛鍚嶅彧鑳藉寘鍚瓧姣嶃€佹暟瀛椼€佷笅鍒掔嚎鍜屼腑鏂?); return; }
+        if (!email || !isValidEmail(email)) { showFieldError(registerEmail, '璇疯緭鍏ユ湁鏁堢殑閭鍦板潃'); showAuthError('璇疯緭鍏ユ湁鏁堢殑閭鍦板潃'); return; }
+        if (!password) { showFieldError(registerPassword, '璇疯緭鍏ュ瘑鐮?); showAuthError('璇疯緭鍏ュ瘑鐮?); return; }
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password)) { showFieldError(registerPassword, '鑷冲皯8浣嶏紝鍚ぇ灏忓啓鍜屾暟瀛?); showAuthError('鑷冲皯8浣嶏紝鍚ぇ灏忓啓鍜屾暟瀛?); return; }
+        if (!confirmPassword || password !== confirmPassword) { showFieldError(registerConfirmPassword, '涓ゆ杈撳叆鐨勫瘑鐮佷笉涓€鑷?); showAuthError('涓ゆ杈撳叆鐨勫瘑鐮佷笉涓€鑷?); return; }
         clearAuthError();
         showLoadingIndicator();
         const sb = getSupabaseClient();
         if (sb) {
             const r = await sb.auth.signUp({ email, password, options: { data: { nick_name: username, phone }, emailRedirectTo: location.origin } });
-            if (r.error) { showAuthError(r.error.message || '注册失败'); return; }
+            if (r.error) { showAuthError(r.error.message || '娉ㄥ唽澶辫触'); return; }
         } else if (FRONTEND_ONLY || PREVIEW_MODE) {
             const users = loadUsers();
-            if (users[email]) { showFieldError(registerEmail, '该邮箱已被注册'); showAuthError('该邮箱已被注册'); hideLoadingIndicator(); return; }
+            if (users[email]) { showFieldError(registerEmail, '璇ラ偖绠卞凡琚敞鍐?); showAuthError('璇ラ偖绠卞凡琚敞鍐?); hideLoadingIndicator(); return; }
             const hash = await bcrypt.hash(password, 10);
             users[email] = { id: Date.now(), username, email, phone, passwordHash: hash, avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=random` };
             saveUsers(users);
         } else {
-            showAuthError('后端未配置'); return;
+            showAuthError('鍚庣鏈厤缃?); return;
         }
-        if (authErrorElement) { authErrorElement.textContent = '注册成功！请使用账号登录'; authErrorElement.className = 'success-message'; authErrorElement.style.display = 'block'; }
+        if (authErrorElement) { authErrorElement.textContent = '娉ㄥ唽鎴愬姛锛佽浣跨敤璐﹀彿鐧诲綍'; authErrorElement.className = 'success-message'; authErrorElement.style.display = 'block'; }
         setTimeout(() => {
             const registerForm = document.getElementById('register-form');
             const loginForm = document.getElementById('login-form');
@@ -658,31 +651,30 @@ async function handleRegister() {
             if (registerForm && loginForm && authModalTitle) {
                 registerForm.style.display = 'none';
                 loginForm.style.display = 'block';
-                authModalTitle.textContent = '欢迎回来';
+                authModalTitle.textContent = '娆㈣繋鍥炴潵';
             }
             clearAuthForms();
             if (loginEmail) loginEmail.value = email;
         }, 1000);
     } catch (error) {
-        showAuthError('注册过程出错，请稍后重试');
+        showAuthError('娉ㄥ唽杩囩▼鍑洪敊锛岃绋嶅悗閲嶈瘯');
     } finally {
         hideLoadingIndicator();
     }
 }
 
-// 显示字段级错误
-function showFieldError(inputElement, message) {
-    // 添加错误样式
+// 鏄剧ず瀛楁绾ч敊璇?function showFieldError(inputElement, message) {
+    // 娣诲姞閿欒鏍峰紡
     inputElement.classList.add('error');
     inputElement.style.borderColor = '#f44336';
     
-    // 移除已存在的错误信息
+    // 绉婚櫎宸插瓨鍦ㄧ殑閿欒淇℃伅
     const existingError = inputElement.nextElementSibling;
     if (existingError && existingError.classList.contains('error-message')) {
         existingError.remove();
     }
     
-    // 创建新的错误信息元素
+    // 鍒涘缓鏂扮殑閿欒淇℃伅鍏冪礌
     const errorElement = document.createElement('div');
     errorElement.className = 'error-message';
     errorElement.textContent = message;
@@ -690,24 +682,24 @@ function showFieldError(inputElement, message) {
     errorElement.style.fontSize = '12px';
     errorElement.style.marginTop = '5px';
     
-    // 插入到输入框后面
+    // 鎻掑叆鍒拌緭鍏ユ鍚庨潰
     inputElement.parentNode.insertBefore(errorElement, inputElement.nextSibling);
 }
 
-// 处理用户登录
+// 澶勭悊鐢ㄦ埛鐧诲綍
 async function handleLogin() {
     try {
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
         
-        // 表单验证
+        // 琛ㄥ崟楠岃瘉
         if (!email || !isValidEmail(email)) {
-            showAuthError('请输入有效的邮箱地址');
+            showAuthError('璇疯緭鍏ユ湁鏁堢殑閭鍦板潃');
             return;
         }
         
         if (!password) {
-            showAuthError('请输入密码');
+            showAuthError('璇疯緭鍏ュ瘑鐮?);
             return;
         }
         
@@ -719,9 +711,9 @@ async function handleLogin() {
                 const msg = String(r.error.message||'');
                 if (msg.toLowerCase().includes('email not confirmed')) {
                     try { await sb.auth.resend({ type: 'signup', email }); } catch(_) {}
-                    showAuthError('邮箱未验证，已重新发送验证邮件，请完成验证后再登录');
+                    showAuthError('閭鏈獙璇侊紝宸查噸鏂板彂閫侀獙璇侀偖浠讹紝璇峰畬鎴愰獙璇佸悗鍐嶇櫥褰?);
                 } else if (msg.includes('Invalid login')) {
-                    showAuthError('密码错误');
+                    showAuthError('瀵嗙爜閿欒');
                 } else {
                     showAuthError(r.error.message);
                 }
@@ -741,9 +733,9 @@ async function handleLogin() {
         if (PREVIEW_MODE || FRONTEND_ONLY) {
             const users = loadUsers();
             const u = users[email];
-            if (!u) { showAuthError('账号未注册，请先注册'); return; }
+            if (!u) { showAuthError('璐﹀彿鏈敞鍐岋紝璇峰厛娉ㄥ唽'); return; }
             const ok = await bcrypt.compare(password, u.passwordHash);
-            if (!ok) { showAuthError('密码错误'); return; }
+            if (!ok) { showAuthError('瀵嗙爜閿欒'); return; }
             currentUser = { id: u.id, email: u.email, username: u.username || email.split('@')[0], avatar: u.avatar, phone: u.phone, nickName: u.username };
             saveSession(currentUser);
             updateUIForLoggedInState();
@@ -753,19 +745,18 @@ async function handleLogin() {
             showUserSettingsModal();
             return;
         }
-        showAuthError('后端未配置');
+        showAuthError('鍚庣鏈厤缃?);
     } catch (error) {
-        console.error('登录过程出错:', error);
-        showAuthError(`登录过程出错: ${error.message || '未知错误'}`);
+        console.error('鐧诲綍杩囩▼鍑洪敊:', error);
+        showAuthError(`鐧诲綍杩囩▼鍑洪敊: ${error.message || '鏈煡閿欒'}`);
     } finally {
-        // 隐藏加载状态指示器
+        // 闅愯棌鍔犺浇鐘舵€佹寚绀哄櫒
         hideLoadingIndicator();
     }
 }
 
-// 表单验证函数已在前面定义，使用输入时验证而非提交时验证
-
-// 显示错误信息
+// 琛ㄥ崟楠岃瘉鍑芥暟宸插湪鍓嶉潰瀹氫箟锛屼娇鐢ㄨ緭鍏ユ椂楠岃瘉鑰岄潪鎻愪氦鏃堕獙璇?
+// 鏄剧ず閿欒淇℃伅
 function showError(inputElement, message) {
     const errorElement = inputElement.nextElementSibling;
     if (errorElement && errorElement.classList.contains('error-message')) {
@@ -775,7 +766,7 @@ function showError(inputElement, message) {
     }
 }
 
-// 隐藏错误信息
+// 闅愯棌閿欒淇℃伅
 function hideError(inputElement) {
     const errorElement = inputElement.nextElementSibling;
     if (errorElement && errorElement.classList.contains('error-message')) {
@@ -785,7 +776,7 @@ function hideError(inputElement) {
     }
 }
 
-// 更新登录状态UI函数
+// 鏇存柊鐧诲綍鐘舵€乁I鍑芥暟
 function updateUIForLoggedInState() {
     try {
         const loginBtn = document.getElementById('login-btn');
@@ -796,44 +787,40 @@ function updateUIForLoggedInState() {
         
         if (loginBtn && userAvatar) {
             if (currentUser) {
-                // 显示用户头像，隐藏登录按钮
-                loginBtn.style.display = 'none';
+                // 鏄剧ず鐢ㄦ埛澶村儚锛岄殣钘忕櫥褰曟寜閽?                loginBtn.style.display = 'none';
                 userAvatar.style.display = 'block';
                 
-                // 更新头像和用户名
+                // 鏇存柊澶村儚鍜岀敤鎴峰悕
                 if (userAvatarImg) {
                     userAvatarImg.src = currentUser.avatar;
-                    userAvatarImg.alt = `${currentUser.username}的头像`;
+                    userAvatarImg.alt = `${currentUser.username}鐨勫ご鍍廯;
                     userAvatarImg.title = currentUser.username;
                 }
                 
-                // 添加账户详情链接的点击事件
-                if (userDetailsLink) {
+                // 娣诲姞璐︽埛璇︽儏閾炬帴鐨勭偣鍑讳簨浠?                if (userDetailsLink) {
                     userDetailsLink.addEventListener('click', function(e) {
                         e.preventDefault();
                         showUserSettingsModal();
                     });
                 }
                 
-                // 添加登出链接的点击事件
-                if (logoutLink) {
+                // 娣诲姞鐧诲嚭閾炬帴鐨勭偣鍑讳簨浠?                if (logoutLink) {
                     logoutLink.addEventListener('click', function(e) {
                         e.preventDefault();
                         logoutUser();
                     });
                 }
             } else {
-                // 隐藏用户头像，显示登录按钮
-                loginBtn.style.display = 'block';
+                // 闅愯棌鐢ㄦ埛澶村儚锛屾樉绀虹櫥褰曟寜閽?                loginBtn.style.display = 'block';
                 userAvatar.style.display = 'none';
             }
         }
     } catch (error) {
-        console.error('更新登录状态UI出错:', error);
+        console.error('鏇存柊鐧诲綍鐘舵€乁I鍑洪敊:', error);
     }
 }
 
-// 登出用户函数
+// 鐧诲嚭鐢ㄦ埛鍑芥暟
 function logoutUser() {
     try {
         const sb = getSupabaseClient();
@@ -842,50 +829,50 @@ function logoutUser() {
         updateUIForLoggedInState();
         showModal('auth-modal');
     } catch (error) {
-        console.error('登出用户出错:', error);
+        console.error('鐧诲嚭鐢ㄦ埛鍑洪敊:', error);
     }
 }
 
-// 显示用户资料模态框
+// 鏄剧ず鐢ㄦ埛璧勬枡妯℃€佹
 function showUserProfileModal() {
     try {
-        // 检查是否已存在
+        // 妫€鏌ユ槸鍚﹀凡瀛樺湪
         if (!document.getElementById('user-profile-modal')) {
             const modalHTML = `
             <div id="user-profile-modal" class="modal" style="display: none;">
                 <div class="modal-content">
-                    <h3>账户详情</h3>
+                    <h3>璐︽埛璇︽儏</h3>
                     <div class="user-profile-content">
                         <div class="profile-header">
-                            <img id="profile-avatar" src="https://picsum.photos/seed/default/100/100" alt="用户头像" class="profile-avatar">
+                            <img id="profile-avatar" src="https://picsum.photos/seed/default/100/100" alt="鐢ㄦ埛澶村儚" class="profile-avatar">
                             <div class="profile-info">
-                                <h4 id="profile-username">用户名</h4>
-                                <p id="profile-email">邮箱</p>
+                                <h4 id="profile-username">鐢ㄦ埛鍚?/h4>
+                                <p id="profile-email">閭</p>
                             </div>
                         </div>
                         <div class="profile-section">
-                            <h5>我的权限</h5>
+                            <h5>鎴戠殑鏉冮檺</h5>
                             <ul>
-                                <li>浏览所有设计作品</li>
-                                <li>预约设计咨询</li>
-                                <li>保存喜欢的设计方案</li>
-                                <li>查看设计进度</li>
+                                <li>娴忚鎵€鏈夎璁′綔鍝?/li>
+                                <li>棰勭害璁捐鍜ㄨ</li>
+                                <li>淇濆瓨鍠滄鐨勮璁℃柟妗?/li>
+                                <li>鏌ョ湅璁捐杩涘害</li>
                             </ul>
                         </div>
                         <div class="profile-section">
-                            <h5>我的服务</h5>
-                            <a href="#" class="service-link">我的预约</a>
-                            <a href="#" class="service-link">我的收藏</a>
-                            <a href="#" class="service-link">修改资料</a>
+                            <h5>鎴戠殑鏈嶅姟</h5>
+                            <a href="#" class="service-link">鎴戠殑棰勭害</a>
+                            <a href="#" class="service-link">鎴戠殑鏀惰棌</a>
+                            <a href="#" class="service-link">淇敼璧勬枡</a>
                         </div>
                     </div>
-                    <button id="close-profile-modal" class="close-modal-btn glass-button">关闭</button>
+                    <button id="close-profile-modal" class="close-modal-btn glass-button">鍏抽棴</button>
                 </div>
             </div>`;
             
             document.body.insertAdjacentHTML('beforeend', modalHTML);
             
-            // 添加关闭模态框事件
+            // 娣诲姞鍏抽棴妯℃€佹浜嬩欢
             const closeProfileModal = document.getElementById('close-profile-modal');
             if (closeProfileModal) {
                 closeProfileModal.addEventListener('click', function() {
@@ -894,7 +881,7 @@ function showUserProfileModal() {
             }
         }
         
-        // 更新用户资料
+        // 鏇存柊鐢ㄦ埛璧勬枡
         if (currentUser) {
             const profileAvatar = document.getElementById('profile-avatar');
             const profileUsername = document.getElementById('profile-username');
@@ -905,10 +892,10 @@ function showUserProfileModal() {
             if (profileEmail) profileEmail.textContent = currentUser.email;
         }
         
-        // 显示模态框
+        // 鏄剧ず妯℃€佹
         showModal('user-profile-modal');
     } catch (error) {
-        console.error('显示用户资料模态框出错:', error);
+        console.error('鏄剧ず鐢ㄦ埛璧勬枡妯℃€佹鍑洪敊:', error);
     }
 }
 
@@ -918,45 +905,45 @@ function showUserSettingsModal() {
             const modalHTML = `
             <div id="user-settings-modal" class="modal" style="display: none;">
               <div class="modal-content">
-                <h3>账户设置</h3>
+                <h3>璐︽埛璁剧疆</h3>
                 <div class="user-profile-content">
                   <div class="profile-header">
-                    <img id="profile-avatar" src="https://picsum.photos/seed/default/100/100" alt="用户头像" class="profile-avatar">
+                    <img id="profile-avatar" src="https://picsum.photos/seed/default/100/100" alt="鐢ㄦ埛澶村儚" class="profile-avatar">
                     <div class="profile-info">
-                      <h4 id="profile-username">用户名</h4>
-                      <p id="profile-email">邮箱</p>
+                      <h4 id="profile-username">鐢ㄦ埛鍚?/h4>
+                      <p id="profile-email">閭</p>
                     </div>
                   </div>
                   <div class="profile-section">
-                    <h5>头像</h5>
+                    <h5>澶村儚</h5>
                     <input type="file" id="avatar-file" accept="image/*">
                     <div style="margin-top:10px;display:flex;gap:12px;align-items:center;">
-                      <img id="avatar-preview" src="" alt="预览" style="width:64px;height:64px;border-radius:50%;display:none;border:2px solid rgba(168,85,247,0.5)">
-                      <span id="avatar-hint" style="color:rgba(255,255,255,0.7);font-size:0.9rem;">支持 JPG/PNG，自动压缩</span>
+                      <img id="avatar-preview" src="" alt="棰勮" style="width:64px;height:64px;border-radius:50%;display:none;border:2px solid rgba(168,85,247,0.5)">
+                      <span id="avatar-hint" style="color:rgba(255,255,255,0.7);font-size:0.9rem;">鏀寔 JPG/PNG锛岃嚜鍔ㄥ帇缂?/span>
                     </div>
                   </div>
                   <div class="profile-section">
-                    <h5>基本信息</h5>
-                    <label>昵称</label>
-                    <input type="text" id="profile-nickname" placeholder="请输入昵称(2-20字)">
+                    <h5>鍩烘湰淇℃伅</h5>
+                    <label>鏄电О</label>
+                    <input type="text" id="profile-nickname" placeholder="璇疯緭鍏ユ樀绉?2-20瀛?">
                     <div id="nickname-error" class="error-message"></div>
-                    <label style="margin-top:12px;">手机号</label>
-                    <input type="tel" id="profile-phone" placeholder="请输入手机号">
+                    <label style="margin-top:12px;">鎵嬫満鍙?/label>
+                    <input type="tel" id="profile-phone" placeholder="璇疯緭鍏ユ墜鏈哄彿">
                     <div id="phone-error" class="error-message"></div>
                   </div>
                   <div class="profile-section">
-                    <h5>更改密码</h5>
-                    <label>原密码</label>
-                    <input type="password" id="current-password" placeholder="请输入原密码">
-                    <label style="margin-top:12px;">新密码</label>
-                    <input type="password" id="new-password" placeholder="请输入新密码(≥8位)">
-                    <label style="margin-top:12px;">确认新密码</label>
-                    <input type="password" id="confirm-password" placeholder="请再次输入新密码">
+                    <h5>鏇存敼瀵嗙爜</h5>
+                    <label>鍘熷瘑鐮?/label>
+                    <input type="password" id="current-password" placeholder="璇疯緭鍏ュ師瀵嗙爜">
+                    <label style="margin-top:12px;">鏂板瘑鐮?/label>
+                    <input type="password" id="new-password" placeholder="璇疯緭鍏ユ柊瀵嗙爜(鈮?浣?">
+                    <label style="margin-top:12px;">纭鏂板瘑鐮?/label>
+                    <input type="password" id="confirm-password" placeholder="璇峰啀娆¤緭鍏ユ柊瀵嗙爜">
                     <div id="password-error" class="error-message"></div>
-                    <button id="apply-password-btn" class="glass-button" style="margin-top:12px;">修改密码</button>
+                    <button id="apply-password-btn" class="glass-button" style="margin-top:12px;">淇敼瀵嗙爜</button>
                   </div>
                 </div>
-                <button id="close-settings-modal" class="close-modal-btn glass-button">关闭</button>
+                <button id="close-settings-modal" class="close-modal-btn glass-button">鍏抽棴</button>
               </div>
             </div>`;
             document.body.insertAdjacentHTML('beforeend', modalHTML);
@@ -987,7 +974,7 @@ function showUserSettingsModal() {
                 if (!f) return;
                 const url = URL.createObjectURL(f);
                 avatarPreview.src = url; avatarPreview.style.display = 'block';
-                try { await uploadAvatarAndSave(f); } catch (err) { alert(err.message || '头像上传失败'); }
+                try { await uploadAvatarAndSave(f); } catch (err) { alert(err.message || '澶村儚涓婁紶澶辫触'); }
                 URL.revokeObjectURL(url);
             };
         }
@@ -998,7 +985,7 @@ function showUserSettingsModal() {
             let timer = null;
             const handler = async () => {
                 const v = nickInput.value;
-                if (!validateNickname(v)) { nickErr.textContent = '昵称需2-20字'; return; }
+                if (!validateNickname(v)) { nickErr.textContent = '鏄电О闇€2-20瀛?; return; }
                 nickErr.textContent = '';
                 try { await updateUserProfile({ nickName: v }); } catch (e) { nickErr.textContent = e.message; }
             };
@@ -1012,7 +999,7 @@ function showUserSettingsModal() {
             let timerP = null;
             const handlerP = async () => {
                 const v = phoneInput.value;
-                if (!validatePhone(v)) { phoneErr.textContent = '手机号格式不正确'; return; }
+                if (!validatePhone(v)) { phoneErr.textContent = '鎵嬫満鍙锋牸寮忎笉姝ｇ‘'; return; }
                 phoneErr.textContent = '';
                 try { await updateUserProfile({ phone: v }); } catch (e) { phoneErr.textContent = e.message; }
             };
@@ -1027,38 +1014,34 @@ function showUserSettingsModal() {
                 const oldPwd = document.getElementById('current-password').value;
                 const newPwd = document.getElementById('new-password').value;
                 const confirmPwd = document.getElementById('confirm-password').value;
-                if (!oldPwd || !newPwd || !confirmPwd) { pwdErr.textContent = '请完整填写密码字段'; return; }
-                if (newPwd.length < 8) { pwdErr.textContent = '新密码至少8位'; return; }
-                if (newPwd !== confirmPwd) { pwdErr.textContent = '两次输入的密码不一致'; return; }
+                if (!oldPwd || !newPwd || !confirmPwd) { pwdErr.textContent = '璇峰畬鏁村～鍐欏瘑鐮佸瓧娈?; return; }
+                if (newPwd.length < 8) { pwdErr.textContent = '鏂板瘑鐮佽嚦灏?浣?; return; }
+                if (newPwd !== confirmPwd) { pwdErr.textContent = '涓ゆ杈撳叆鐨勫瘑鐮佷笉涓€鑷?; return; }
                 pwdErr.textContent = '';
-                try { await changeUserPassword(oldPwd, newPwd); alert('密码修改成功'); document.getElementById('current-password').value=''; document.getElementById('new-password').value=''; document.getElementById('confirm-password').value=''; }
+                try { await changeUserPassword(oldPwd, newPwd); alert('瀵嗙爜淇敼鎴愬姛'); document.getElementById('current-password').value=''; document.getElementById('new-password').value=''; document.getElementById('confirm-password').value=''; }
                 catch (e) { pwdErr.textContent = e.message; }
             };
         }
 
         showModal('user-settings-modal');
     } catch (error) {
-        console.error('显示账户设置模态框出错:', error);
+        console.error('鏄剧ず璐︽埛璁剧疆妯℃€佹鍑洪敊:', error);
     }
 }
 
-// 检查用户是否已登录的工具函数
-function isUserLoggedIn() {
+// 妫€鏌ョ敤鎴锋槸鍚﹀凡鐧诲綍鐨勫伐鍏峰嚱鏁?function isUserLoggedIn() {
     return !!currentUser;
 }
 
-// 基于用户认证状态的权限控制函数
+// 鍩轰簬鐢ㄦ埛璁よ瘉鐘舵€佺殑鏉冮檺鎺у埗鍑芥暟
 function checkUserPermission(requiredPermission) {
-    // 如果需要登录但用户未登录
-    if (requiredPermission === 'logged_in' && !isUserLoggedIn()) {
+    // 濡傛灉闇€瑕佺櫥褰曚絾鐢ㄦ埛鏈櫥褰?    if (requiredPermission === 'logged_in' && !isUserLoggedIn()) {
         return false;
     }
-    // 这里可以扩展更多权限检查，如管理员权限等
-    return true;
+    // 杩欓噷鍙互鎵╁睍鏇村鏉冮檺妫€鏌ワ紝濡傜鐞嗗憳鏉冮檺绛?    return true;
 }
 
-// 格式化日期
-function formatDate(dateString) {
+// 鏍煎紡鍖栨棩鏈?function formatDate(dateString) {
     try {
         const date = new Date(dateString);
         return new Intl.DateTimeFormat('zh-CN', {
@@ -1067,72 +1050,72 @@ function formatDate(dateString) {
             day: 'numeric'
         }).format(date);
     } catch (error) {
-        console.error('日期格式化出错:', error);
-        return '未知';
+        console.error('鏃ユ湡鏍煎紡鍖栧嚭閿?', error);
+        return '鏈煡';
     }
 }
 
-// 创建作品详情模态框
+// 鍒涘缓浣滃搧璇︽儏妯℃€佹
 function createWorkDetailModal() {
     try {
-        // 检查是否已存在
+        // 妫€鏌ユ槸鍚﹀凡瀛樺湪
         if (!document.getElementById('work-detail-modal')) {
             const modalHTML = `
             <div id="work-detail-modal" class="modal" style="display: none;" aria-hidden="true" role="dialog" aria-labelledby="work-detail-title">
                 <div class="modal-content work-detail-content">
                     <div class="modal-header">
-                        <h3 id="work-detail-title" class="modal-title">作品详情</h3>
-                        <button id="close-work-modal-x" class="close-modal-x" aria-label="关闭">&times;</button>
+                        <h3 id="work-detail-title" class="modal-title">浣滃搧璇︽儏</h3>
+                        <button id="close-work-modal-x" class="close-modal-x" aria-label="鍏抽棴">&times;</button>
                     </div>
                     <div class="modal-body">
                         <div class="work-detail-wrapper">
                             <div class="work-detail-image">
-                                <img id="work-detail-img" src="" alt="作品图片" loading="lazy">
+                                <img id="work-detail-img" src="" alt="浣滃搧鍥剧墖" loading="lazy">
                             </div>
                             <div class="work-detail-info">
                                 <div class="work-detail-description-container">
-                                    <h4>作品描述</h4>
-                                    <p id="work-detail-description" class="description-text">作品描述</p>
+                                    <h4>浣滃搧鎻忚堪</h4>
+                                    <p id="work-detail-description" class="description-text">浣滃搧鎻忚堪</p>
                                 </div>
                                 <div class="work-detail-meta">
                                     <div class="meta-item">
-                                        <span class="meta-label">设计师:</span>
-                                        <span id="work-detail-designer" class="meta-value">未知</span>
+                                        <span class="meta-label">璁捐甯?</span>
+                                        <span id="work-detail-designer" class="meta-value">鏈煡</span>
                                     </div>
                                     <div class="meta-item">
-                                        <span class="meta-label">创建时间:</span>
-                                        <span id="work-detail-date" class="meta-value">未知</span>
+                                        <span class="meta-label">鍒涘缓鏃堕棿:</span>
+                                        <span id="work-detail-date" class="meta-value">鏈煡</span>
                                     </div>
                                     <div class="meta-item">
-                                        <span class="meta-label">设计风格:</span>
-                                        <span id="work-detail-style" class="meta-value">未知</span>
+                                        <span class="meta-label">璁捐椋庢牸:</span>
+                                        <span id="work-detail-style" class="meta-value">鏈煡</span>
                                     </div>
                                     <div class="meta-item">
-                                        <span class="meta-label">空间类型:</span>
-                                        <span id="work-detail-category" class="meta-value">未知</span>
+                                        <span class="meta-label">绌洪棿绫诲瀷:</span>
+                                        <span id="work-detail-category" class="meta-value">鏈煡</span>
                                     </div>
                                     <div class="meta-item">
-                                        <span class="meta-label">状态:</span>
-                                        <span id="work-detail-status" class="meta-value status-badge status-public">公开</span>
+                                        <span class="meta-label">鐘舵€?</span>
+                                        <span id="work-detail-status" class="meta-value status-badge status-public">鍏紑</span>
                                     </div>
                                 </div>
-                                <!-- 操作按钮区域，根据用户权限显示 -->
+                                <!-- 鎿嶄綔鎸夐挳鍖哄煙锛屾牴鎹敤鎴锋潈闄愭樉绀?-->
                                 <div id="work-actions" class="work-actions">
                                     <button id="edit-work-btn" class="work-action-btn edit-btn glass-button" style="display: none;">
-                                        <span class="btn-icon">✏️</span> 编辑作品
+                                        <span class="btn-icon">鉁忥笍</span> 缂栬緫浣滃搧
                                     </button>
                                     <button id="delete-work-btn" class="work-action-btn delete-btn glass-button" style="display: none;">
-                                        <span class="btn-icon">🗑️</span> 删除作品
+                                        <span class="btn-icon">馃棏锔?/span> 鍒犻櫎浣滃搧
                                     </button>
                                     <button id="toggle-visibility-btn" class="work-action-btn toggle-btn glass-button" style="display: none;">
-                                        <span class="btn-icon">👁️</span> 隐藏作品
+                                        <span class="btn-icon">馃憗锔?/span> 闅愯棌浣滃搧
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="close-work-modal" class="close-modal-btn glass-button">关闭</button>
+                        <button id="close-work-modal" class="close-modal-btn glass-button">鍏抽棴</button>
                     </div>
                 </div>
             </div>`;
@@ -1142,12 +1125,12 @@ function createWorkDetailModal() {
         
         return document.getElementById('work-detail-modal');
     } catch (error) {
-        console.error('创建作品详情模态框出错:', error);
+        console.error('鍒涘缓浣滃搧璇︽儏妯℃€佹鍑洪敊:', error);
         return null;
     }
 }
 
-// 根据ID获取作品详情
+// 鏍规嵁ID鑾峰彇浣滃搧璇︽儏
 async function getWorkById(workId) {
     try {
         const saved = JSON.parse(localStorage.getItem('user_works') || '[]');
@@ -1156,22 +1139,22 @@ async function getWorkById(workId) {
         const mockWorks = getMockWorks();
         return mockWorks.find(work => work.id === workId) || null;
     } catch (error) {
-        console.error('获取作品详情失败:', error);
+        console.error('鑾峰彇浣滃搧璇︽儏澶辫触:', error);
         
-        // 使用模拟数据作为备份
+        // 浣跨敤妯℃嫙鏁版嵁浣滀负澶囦唤
         const mockWorks = getMockWorks();
         return mockWorks.find(work => work.id === workId) || null;
     }
 }
 
-// 显示作品详情
+// 鏄剧ず浣滃搧璇︽儏
 async function showWorkDetails(workId, workData = null) {
     try {
-        // 创建或获取模态框
+        // 鍒涘缓鎴栬幏鍙栨ā鎬佹
         const modal = createWorkDetailModal();
         if (!modal) return;
         
-        // 获取模态框元素
+        // 鑾峰彇妯℃€佹鍏冪礌
         const titleElement = document.getElementById('work-detail-title');
         const imgElement = document.getElementById('work-detail-img');
         const descElement = document.getElementById('work-detail-description');
@@ -1181,38 +1164,36 @@ async function showWorkDetails(workId, workData = null) {
         const categoryElement = document.getElementById('work-detail-category');
         const statusElement = document.getElementById('work-detail-status');
         
-        // 显示加载状态
-        titleElement.textContent = '加载中...';
-        descElement.textContent = '正在加载作品信息，请稍候...';
+        // 鏄剧ず鍔犺浇鐘舵€?        titleElement.textContent = '鍔犺浇涓?..';
+        descElement.textContent = '姝ｅ湪鍔犺浇浣滃搧淇℃伅锛岃绋嶅€?..';
         imgElement.src = '';
         
-        // 如果没有提供workData，则异步获取
+        // 濡傛灉娌℃湁鎻愪緵workData锛屽垯寮傛鑾峰彇
         if (!workData) {
             workData = await getWorkById(workId);
             
             if (!workData) {
-                titleElement.textContent = '错误';
-                descElement.textContent = '作品不存在或已被删除';
+                titleElement.textContent = '閿欒';
+                descElement.textContent = '浣滃搧涓嶅瓨鍦ㄦ垨宸茶鍒犻櫎';
                 showModal('work-detail-modal');
                 return;
             }
         }
         
-        // 填充作品数据
-        titleElement.textContent = workData.title || '作品详情';
+        // 濉厖浣滃搧鏁版嵁
+        titleElement.textContent = workData.title || '浣滃搧璇︽儏';
         imgElement.src = workData.image_url || workData.image || 'https://picsum.photos/seed/default/800/600';
-        descElement.textContent = workData.description || '暂无描述';
-        designerElement.textContent = workData.designer || 'Dimension Space 设计团队';
+        descElement.textContent = workData.description || '鏆傛棤鎻忚堪';
+        designerElement.textContent = workData.designer || 'Dimension Space 璁捐鍥㈤槦';
         dateElement.textContent = workData.created_at ? formatDate(workData.created_at) : (workData.date || new Date().toLocaleDateString());
-        styleElement.textContent = workData.style || '现代风格';
-        categoryElement.textContent = workData.category || '未知类型';
+        styleElement.textContent = workData.style || '鐜颁唬椋庢牸';
+        categoryElement.textContent = workData.category || '鏈煡绫诲瀷';
         
-        // 更新状态显示
-        const isHidden = workData.is_hidden || workData.isHidden;
-        statusElement.textContent = isHidden ? '已隐藏' : '公开';
+        // 鏇存柊鐘舵€佹樉绀?        const isHidden = workData.is_hidden || workData.isHidden;
+        statusElement.textContent = isHidden ? '宸查殣钘? : '鍏紑';
         statusElement.className = isHidden ? 'meta-value status-badge status-hidden' : 'meta-value status-badge status-public';
         
-        // 根据用户权限显示操作按钮
+        // 鏍规嵁鐢ㄦ埛鏉冮檺鏄剧ず鎿嶄綔鎸夐挳
         const editBtn = document.getElementById('edit-work-btn');
         const deleteBtn = document.getElementById('delete-work-btn');
         const toggleBtn = document.getElementById('toggle-visibility-btn');
@@ -1220,21 +1201,21 @@ async function showWorkDetails(workId, workData = null) {
         const canManage = isUserLoggedIn() && (!workData.user_id || checkUserPermission(workData.user_id));
         
         if (canManage) {
-            // 有权限的用户可以看到操作按钮
+            // 鏈夋潈闄愮殑鐢ㄦ埛鍙互鐪嬪埌鎿嶄綔鎸夐挳
             if (editBtn) editBtn.style.display = 'inline-block';
             if (deleteBtn) deleteBtn.style.display = 'inline-block';
             if (toggleBtn) {
                 toggleBtn.style.display = 'inline-block';
-                toggleBtn.textContent = isHidden ? '👁️ 显示作品' : '👁️ 隐藏作品';
+                toggleBtn.textContent = isHidden ? '馃憗锔?鏄剧ず浣滃搧' : '馃憗锔?闅愯棌浣滃搧';
             }
         } else {
-            // 无权限的用户隐藏操作按钮
+            // 鏃犳潈闄愮殑鐢ㄦ埛闅愯棌鎿嶄綔鎸夐挳
             if (editBtn) editBtn.style.display = 'none';
             if (deleteBtn) deleteBtn.style.display = 'none';
             if (toggleBtn) toggleBtn.style.display = 'none';
         }
         
-        // 添加操作按钮事件监听
+        // 娣诲姞鎿嶄綔鎸夐挳浜嬩欢鐩戝惉
         if (editBtn && canManage) {
             editBtn.onclick = function() {
                 openEditWorkModal(workId, workData);
@@ -1243,10 +1224,10 @@ async function showWorkDetails(workId, workData = null) {
         
         if (deleteBtn && canManage) {
             deleteBtn.onclick = function() {
-                if (confirm('确定要删除这个作品吗？此操作不可撤销。')) {
+                if (confirm('纭畾瑕佸垹闄よ繖涓綔鍝佸悧锛熸鎿嶄綔涓嶅彲鎾ら攢銆?)) {
                     deleteWork(workId).then(() => {
                         hideModal('work-detail-modal');
-                        // 实际实现时，这里应该刷新作品列表
+                        // 瀹為檯瀹炵幇鏃讹紝杩欓噷搴旇鍒锋柊浣滃搧鍒楄〃
                     });
                 }
             };
@@ -1256,20 +1237,19 @@ async function showWorkDetails(workId, workData = null) {
             toggleBtn.onclick = function() {
                 const newHiddenState = !isHidden;
                 toggleWorkVisibility(workId, newHiddenState).then(() => {
-                    // 更新UI状态
-                    workData.is_hidden = newHiddenState;
+                    // 鏇存柊UI鐘舵€?                    workData.is_hidden = newHiddenState;
                     workData.isHidden = newHiddenState;
-                    statusElement.textContent = newHiddenState ? '已隐藏' : '公开';
+                    statusElement.textContent = newHiddenState ? '宸查殣钘? : '鍏紑';
                     statusElement.className = newHiddenState ? 'meta-value status-badge status-hidden' : 'meta-value status-badge status-public';
-                    toggleBtn.textContent = newHiddenState ? '👁️ 显示作品' : '👁️ 隐藏作品';
+                    toggleBtn.textContent = newHiddenState ? '馃憗锔?鏄剧ず浣滃搧' : '馃憗锔?闅愯棌浣滃搧';
                 });
             };
         }
         
-        // 显示模态框
+        // 鏄剧ず妯℃€佹
         showModal('work-detail-modal');
         
-        // 关闭按钮事件
+        // 鍏抽棴鎸夐挳浜嬩欢
         const closeModalBtn = document.getElementById('close-work-modal');
         const closeModalXBtn = document.getElementById('close-work-modal-x');
         
@@ -1285,8 +1265,7 @@ async function showWorkDetails(workId, workData = null) {
             };
         }
         
-        // 添加ESC键关闭功能
-        function handleEscKey(event) {
+        // 娣诲姞ESC閿叧闂姛鑳?        function handleEscKey(event) {
             if (event.key === 'Escape') {
                 hideModal('work-detail-modal');
                 document.removeEventListener('keydown', handleEscKey);
@@ -1295,7 +1274,7 @@ async function showWorkDetails(workId, workData = null) {
         
         document.addEventListener('keydown', handleEscKey);
         
-        // 点击模态框外部关闭
+        // 鐐瑰嚮妯℃€佹澶栭儴鍏抽棴
         modal.onclick = function(event) {
             if (event.target === modal) {
                 hideModal('work-detail-modal');
@@ -1303,81 +1282,81 @@ async function showWorkDetails(workId, workData = null) {
             }
         };
     } catch (error) {
-        console.error('显示作品详情出错:', error);
+        console.error('鏄剧ず浣滃搧璇︽儏鍑洪敊:', error);
     }
 }
 
-// 创建编辑作品模态框
+// 鍒涘缓缂栬緫浣滃搧妯℃€佹
 function createEditWorkModal() {
     try {
-        // 检查是否已存在
+        // 妫€鏌ユ槸鍚﹀凡瀛樺湪
         if (!document.getElementById('edit-work-modal')) {
             const modalHTML = `
             <div id="edit-work-modal" class="modal" style="display: none;" aria-hidden="true" role="dialog" aria-labelledby="edit-work-title">
                 <div class="modal-content edit-work-content">
                     <div class="modal-header">
-                        <h3 id="edit-work-title" class="modal-title">编辑作品</h3>
-                        <button id="close-edit-modal-x" class="close-modal-x" aria-label="关闭">&times;</button>
+                        <h3 id="edit-work-title" class="modal-title">缂栬緫浣滃搧</h3>
+                        <button id="close-edit-modal-x" class="close-modal-x" aria-label="鍏抽棴">&times;</button>
                     </div>
                     <div class="modal-body">
                         <form id="edit-work-form" class="work-form">
                             <input type="hidden" id="edit-work-id" value="">
                             <div class="form-group">
-                                <label for="edit-work-title-input" class="required-field">作品标题</label>
-                                <input type="text" id="edit-work-title-input" class="form-control" required placeholder="请输入作品标题">
+                                <label for="edit-work-title-input" class="required-field">浣滃搧鏍囬</label>
+                                <input type="text" id="edit-work-title-input" class="form-control" required placeholder="璇疯緭鍏ヤ綔鍝佹爣棰?>
                                 <div class="error-message" id="edit-work-title-error"></div>
                             </div>
                             
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="edit-work-style" class="required-field">设计风格</label>
+                                    <label for="edit-work-style" class="required-field">璁捐椋庢牸</label>
                                     <select id="edit-work-style" class="form-control" required>
-                                        <option value="">请选择设计风格</option>
-                                        <option value="极简主义">极简主义</option>
-                                        <option value="装饰风格">装饰风格</option>
-                                        <option value="工业风">工业风</option>
-                                        <option value="北欧风格">北欧风格</option>
-                                        <option value="中式风格">中式风格</option>
-                                        <option value="日式风格">日式风格</option>
-                                        <option value="现代风格">现代风格</option>
-                                        <option value="轻奢风格">轻奢风格</option>
+                                        <option value="">璇烽€夋嫨璁捐椋庢牸</option>
+                                        <option value="鏋佺畝涓讳箟">鏋佺畝涓讳箟</option>
+                                        <option value="瑁呴グ椋庢牸">瑁呴グ椋庢牸</option>
+                                        <option value="宸ヤ笟椋?>宸ヤ笟椋?/option>
+                                        <option value="鍖楁椋庢牸">鍖楁椋庢牸</option>
+                                        <option value="涓紡椋庢牸">涓紡椋庢牸</option>
+                                        <option value="鏃ュ紡椋庢牸">鏃ュ紡椋庢牸</option>
+                                        <option value="鐜颁唬椋庢牸">鐜颁唬椋庢牸</option>
+                                        <option value="杞诲ア椋庢牸">杞诲ア椋庢牸</option>
                                     </select>
                                     <div class="error-message" id="edit-work-style-error"></div>
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="edit-work-category" class="required-field">空间类型</label>
+                                    <label for="edit-work-category" class="required-field">绌洪棿绫诲瀷</label>
                                     <select id="edit-work-category" class="form-control" required>
-                                        <option value="">请选择空间类型</option>
-                                        <option value="客厅">客厅</option>
-                                        <option value="卧室">卧室</option>
-                                        <option value="厨房">厨房</option>
-                                        <option value="浴室">浴室</option>
-                                        <option value="书房">书房</option>
-                                        <option value="餐厅">餐厅</option>
-                                        <option value="儿童房">儿童房</option>
-                                        <option value="办公室">办公室</option>
+                                        <option value="">璇烽€夋嫨绌洪棿绫诲瀷</option>
+                                        <option value="瀹㈠巺">瀹㈠巺</option>
+                                        <option value="鍗у">鍗у</option>
+                                        <option value="鍘ㄦ埧">鍘ㄦ埧</option>
+                                        <option value="娴村">娴村</option>
+                                        <option value="涔︽埧">涔︽埧</option>
+                                        <option value="椁愬巺">椁愬巺</option>
+                                        <option value="鍎跨鎴?>鍎跨鎴?/option>
+                                        <option value="鍔炲叕瀹?>鍔炲叕瀹?/option>
                                     </select>
                                     <div class="error-message" id="edit-work-category-error"></div>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label for="edit-work-description">作品描述</label>
-                                <textarea id="edit-work-description" class="form-control" rows="4" placeholder="请输入作品描述"></textarea>
+                                <label for="edit-work-description">浣滃搧鎻忚堪</label>
+                                <textarea id="edit-work-description" class="form-control" rows="4" placeholder="璇疯緭鍏ヤ綔鍝佹弿杩?></textarea>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button id="cancel-edit-btn" class="glass-button">取消</button>
-                        <button id="save-edit-btn" class="glass-button primary-button">保存修改</button>
+                        <button id="cancel-edit-btn" class="glass-button">鍙栨秷</button>
+                        <button id="save-edit-btn" class="glass-button primary-button">淇濆瓨淇敼</button>
                     </div>
                 </div>
             </div>`;
             
             document.body.insertAdjacentHTML('beforeend', modalHTML);
             
-            // 添加表单验证
+            // 娣诲姞琛ㄥ崟楠岃瘉
             const form = document.getElementById('edit-work-form');
             if (form) {
                 form.addEventListener('input', function(e) {
@@ -1385,7 +1364,7 @@ function createEditWorkModal() {
                         const errorElement = document.getElementById(`${e.target.id}-error`);
                         if (errorElement) {
                             if (e.target.value.trim() === '') {
-                                errorElement.textContent = '此字段为必填项';
+                                errorElement.textContent = '姝ゅ瓧娈典负蹇呭～椤?;
                             } else {
                                 errorElement.textContent = '';
                             }
@@ -1397,19 +1376,19 @@ function createEditWorkModal() {
         
         return document.getElementById('edit-work-modal');
     } catch (error) {
-        console.error('创建编辑作品模态框出错:', error);
+        console.error('鍒涘缓缂栬緫浣滃搧妯℃€佹鍑洪敊:', error);
         return null;
     }
 }
 
-// 打开编辑作品模态框
+// 鎵撳紑缂栬緫浣滃搧妯℃€佹
 function openEditWorkModal(workId, workData) {
     try {
-        // 创建或获取编辑模态框
+        // 鍒涘缓鎴栬幏鍙栫紪杈戞ā鎬佹
         const editModal = createEditWorkModal();
         if (!editModal) return;
         
-        // 获取表单元素
+        // 鑾峰彇琛ㄥ崟鍏冪礌
         const form = document.getElementById('edit-work-form');
         const workIdInput = document.getElementById('edit-work-id');
         const titleInput = document.getElementById('edit-work-title-input');
@@ -1417,21 +1396,21 @@ function openEditWorkModal(workId, workData) {
         const categorySelect = document.getElementById('edit-work-category');
         const descriptionTextarea = document.getElementById('edit-work-description');
         
-        // 清空错误信息
+        // 娓呯┖閿欒淇℃伅
         const errorElements = document.querySelectorAll('.error-message');
         errorElements.forEach(el => el.textContent = '');
         
-        // 填充表单数据
+        // 濉厖琛ㄥ崟鏁版嵁
         if (workIdInput) workIdInput.value = workId;
         if (titleInput) titleInput.value = workData.title || '';
         if (styleSelect) styleSelect.value = workData.style || '';
         if (categorySelect) categorySelect.value = workData.category || '';
         if (descriptionTextarea) descriptionTextarea.value = workData.description || '';
         
-        // 显示编辑模态框
+        // 鏄剧ず缂栬緫妯℃€佹
         showModal('edit-work-modal');
         
-        // 取消按钮事件
+        // 鍙栨秷鎸夐挳浜嬩欢
         const cancelBtn = document.getElementById('cancel-edit-btn');
         if (cancelBtn) {
             cancelBtn.onclick = function() {
@@ -1439,7 +1418,7 @@ function openEditWorkModal(workId, workData) {
             };
         }
         
-        // 关闭按钮事件
+        // 鍏抽棴鎸夐挳浜嬩欢
         const closeModalXBtn = document.getElementById('close-edit-modal-x');
         if (closeModalXBtn) {
             closeModalXBtn.onclick = function() {
@@ -1447,35 +1426,35 @@ function openEditWorkModal(workId, workData) {
             };
         }
         
-        // 保存按钮事件
+        // 淇濆瓨鎸夐挳浜嬩欢
         const saveBtn = document.getElementById('save-edit-btn');
         if (saveBtn) {
             saveBtn.onclick = async function() {
-                // 表单验证
+                // 琛ㄥ崟楠岃瘉
                 let isValid = true;
                 
-                // 验证必填字段
+                // 楠岃瘉蹇呭～瀛楁
                 if (titleInput && titleInput.value.trim() === '') {
                     isValid = false;
                     const errorElement = document.getElementById('edit-work-title-input-error');
-                    if (errorElement) errorElement.textContent = '请输入作品标题';
+                    if (errorElement) errorElement.textContent = '璇疯緭鍏ヤ綔鍝佹爣棰?;
                 }
                 
                 if (styleSelect && styleSelect.value === '') {
                     isValid = false;
                     const errorElement = document.getElementById('edit-work-style-error');
-                    if (errorElement) errorElement.textContent = '请选择设计风格';
+                    if (errorElement) errorElement.textContent = '璇烽€夋嫨璁捐椋庢牸';
                 }
                 
                 if (categorySelect && categorySelect.value === '') {
                     isValid = false;
                     const errorElement = document.getElementById('edit-work-category-error');
-                    if (errorElement) errorElement.textContent = '请选择空间类型';
+                    if (errorElement) errorElement.textContent = '璇烽€夋嫨绌洪棿绫诲瀷';
                 }
                 
                 if (!isValid) return;
                 
-                // 收集表单数据
+                // 鏀堕泦琛ㄥ崟鏁版嵁
                 const updatedData = {
                     title: titleInput ? titleInput.value.trim() : '',
                     style: styleSelect ? styleSelect.value : '',
@@ -1484,26 +1463,25 @@ function openEditWorkModal(workId, workData) {
                 };
                 
                 try {
-                    // 保存修改
+                    // 淇濆瓨淇敼
                     await updateWork(workId, updatedData);
                     
-                    // 隐藏编辑模态框
+                    // 闅愯棌缂栬緫妯℃€佹
                     hideModal('edit-work-modal');
                     
-                    // 刷新作品详情
+                    // 鍒锋柊浣滃搧璇︽儏
                     const detailModal = document.getElementById('work-detail-modal');
                     if (detailModal && detailModal.style.display === 'block') {
                         showWorkDetails(workId);
                     }
                 } catch (error) {
-                    console.error('保存作品修改失败:', error);
-                    alert('保存修改失败，请稍后重试');
+                    console.error('淇濆瓨浣滃搧淇敼澶辫触:', error);
+                    alert('淇濆瓨淇敼澶辫触锛岃绋嶅悗閲嶈瘯');
                 }
             };
         }
         
-        // 添加ESC键关闭功能
-        function handleEscKey(event) {
+        // 娣诲姞ESC閿叧闂姛鑳?        function handleEscKey(event) {
             if (event.key === 'Escape') {
                 hideModal('edit-work-modal');
                 document.removeEventListener('keydown', handleEscKey);
@@ -1512,7 +1490,7 @@ function openEditWorkModal(workId, workData) {
         
         document.addEventListener('keydown', handleEscKey);
         
-        // 点击模态框外部关闭
+        // 鐐瑰嚮妯℃€佹澶栭儴鍏抽棴
         editModal.onclick = function(event) {
             if (event.target === editModal) {
                 hideModal('edit-work-modal');
@@ -1520,22 +1498,22 @@ function openEditWorkModal(workId, workData) {
             }
         };
     } catch (error) {
-        console.error('打开编辑作品模态框出错:', error);
+        console.error('鎵撳紑缂栬緫浣滃搧妯℃€佹鍑洪敊:', error);
     }
 }
 
-// 为作品项添加点击事件
+// 涓轰綔鍝侀」娣诲姞鐐瑰嚮浜嬩欢
 function setupWorkItemClickEvents() {
     try {
         const workItems = document.querySelectorAll('.work-item');
         
         workItems.forEach((item, index) => {
-            // 防止重复添加事件
+            // 闃叉閲嶅娣诲姞浜嬩欢
             const newItem = item.cloneNode(true);
             item.parentNode.replaceChild(newItem, item);
             
             newItem.addEventListener('click', function() {
-                // 获取作品数据（这里使用模拟数据，实际应从数据库获取）
+                // 鑾峰彇浣滃搧鏁版嵁锛堣繖閲屼娇鐢ㄦā鎷熸暟鎹紝瀹為檯搴斾粠鏁版嵁搴撹幏鍙栵級
                 const workImages = [
                     'images/minimalist-livingroom.jpg',
                     'images/decorative-livingroom.jpg', 
@@ -1544,27 +1522,27 @@ function setupWorkItemClickEvents() {
                 ];
                 
                 const workTitles = [
-                    '极简主义客厅',
-                    '装饰风格客厅',
-                    '工业风厨房',
-                    '北欧风格卧室'
+                    '鏋佺畝涓讳箟瀹㈠巺',
+                    '瑁呴グ椋庢牸瀹㈠巺',
+                    '宸ヤ笟椋庡帹鎴?,
+                    '鍖楁椋庢牸鍗у'
                 ];
                 
                 const workDescriptions = [
-                    '简约而不简单的设计理念，通过线条、色彩和空间的巧妙运用，打造出舒适宜人的生活环境。留白的艺术在这里得到了完美诠释，让每一件家具都成为空间的焦点。',
-                    '华丽的装饰元素与精致的细节，营造优雅高贵的空间氛围。金色线条、雕花装饰和质感十足的面料共同打造出一个充满艺术气息的生活空间。',
-                    '粗犷与精致的碰撞，打造独特个性的烹饪空间。裸露的金属管道与实木橱柜形成鲜明对比，既保留了工业风格的原始感，又不失实用性和美观度。',
-                    '轻盈通透的设计，自然光线与简约家具的完美结合。浅色木质地板、白色墙面和浅灰色家具共同营造出一个干净、明亮、舒适的睡眠环境。'
+                    '绠€绾﹁€屼笉绠€鍗曠殑璁捐鐞嗗康锛岄€氳繃绾挎潯銆佽壊褰╁拰绌洪棿鐨勫阀濡欒繍鐢紝鎵撻€犲嚭鑸掗€傚疁浜虹殑鐢熸椿鐜銆傜暀鐧界殑鑹烘湳鍦ㄨ繖閲屽緱鍒颁簡瀹岀編璇犻噴锛岃姣忎竴浠跺鍏烽兘鎴愪负绌洪棿鐨勭劍鐐广€?,
+                    '鍗庝附鐨勮楗板厓绱犱笌绮捐嚧鐨勭粏鑺傦紝钀ラ€犱紭闆呴珮璐电殑绌洪棿姘涘洿銆傞噾鑹茬嚎鏉°€侀洉鑺辫楗板拰璐ㄦ劅鍗佽冻鐨勯潰鏂欏叡鍚屾墦閫犲嚭涓€涓厖婊¤壓鏈皵鎭殑鐢熸椿绌洪棿銆?,
+                    '绮楃姺涓庣簿鑷寸殑纰版挒锛屾墦閫犵嫭鐗逛釜鎬х殑鐑归オ绌洪棿銆傝８闇茬殑閲戝睘绠￠亾涓庡疄鏈ㄦ┍鏌滃舰鎴愰矞鏄庡姣旓紝鏃繚鐣欎簡宸ヤ笟椋庢牸鐨勫師濮嬫劅锛屽張涓嶅け瀹炵敤鎬у拰缇庤搴︺€?,
+                    '杞荤泩閫氶€忕殑璁捐锛岃嚜鐒跺厜绾夸笌绠€绾﹀鍏风殑瀹岀編缁撳悎銆傛祬鑹叉湪璐ㄥ湴鏉裤€佺櫧鑹插闈㈠拰娴呯伆鑹插鍏峰叡鍚岃惀閫犲嚭涓€涓共鍑€銆佹槑浜€佽垝閫傜殑鐫＄湢鐜銆?
                 ];
                 
                 const workData = {
                     id: `work-${index + 1}`,
-                    title: workTitles[index] || '设计作品',
-                    description: workDescriptions[index] || '暂无详细描述',
+                    title: workTitles[index] || '璁捐浣滃搧',
+                    description: workDescriptions[index] || '鏆傛棤璇︾粏鎻忚堪',
                     image: workImages[index] || 'https://picsum.photos/seed/default/800/600',
-                    designer: 'Dimension Space 设计团队',
+                    designer: 'Dimension Space 璁捐鍥㈤槦',
                     date: '2024-01-15',
-                    style: ['极简主义', '装饰风格', '工业风', '北欧风格'][index] || '现代风格',
+                    style: ['鏋佺畝涓讳箟', '瑁呴グ椋庢牸', '宸ヤ笟椋?, '鍖楁椋庢牸'][index] || '鐜颁唬椋庢牸',
                     isHidden: false
                 };
                 
@@ -1572,19 +1550,17 @@ function setupWorkItemClickEvents() {
             });
         });
     } catch (error) {
-        console.error('设置作品项点击事件出错:', error);
+        console.error('璁剧疆浣滃搧椤圭偣鍑讳簨浠跺嚭閿?', error);
     }
 }
 
-// 数据库表结构设计 - 作品管理相关
+// 鏁版嵁搴撹〃缁撴瀯璁捐 - 浣滃搧绠＄悊鐩稿叧
 /******************************************************************
- * 以下是建议的数据库表结构（已迁移到本地SQLite）
-
+ * 浠ヤ笅鏄缓璁殑鏁版嵁搴撹〃缁撴瀯锛堝凡杩佺Щ鍒版湰鍦癝QLite锛?
  ******************************************************************/
 
 /*
--- 创建作品表
-CREATE TABLE works (
+-- 鍒涘缓浣滃搧琛?CREATE TABLE works (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title VARCHAR(255) NOT NULL,
     description TEXT,
@@ -1599,13 +1575,12 @@ CREATE TABLE works (
     category VARCHAR(100)
 );
 
--- 创建索引以提高查询性能
+-- 鍒涘缓绱㈠紩浠ユ彁楂樻煡璇㈡€ц兘
 CREATE INDEX idx_works_user_id ON works(user_id);
 CREATE INDEX idx_works_is_hidden ON works(is_hidden);
 CREATE INDEX idx_works_style ON works(style);
 
--- 创建权限策略，允许用户只操作自己的作品
-CREATE POLICY "User can view all public works" ON works
+-- 鍒涘缓鏉冮檺绛栫暐锛屽厑璁哥敤鎴峰彧鎿嶄綔鑷繁鐨勪綔鍝?CREATE POLICY "User can view all public works" ON works
     FOR SELECT USING (is_hidden = FALSE);
 
 CREATE POLICY "User can view their own works" ON works
@@ -1620,8 +1595,7 @@ CREATE POLICY "User can update their own works" ON works
 CREATE POLICY "User can delete their own works" ON works
     FOR DELETE USING (auth.uid() = user_id);
 
--- 创建评论表
-CREATE TABLE work_comments (
+-- 鍒涘缓璇勮琛?CREATE TABLE work_comments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     work_id UUID REFERENCES works(id) ON DELETE CASCADE,
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -1630,18 +1604,15 @@ CREATE TABLE work_comments (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 创建作品收藏表
-CREATE TABLE work_favorites (
+-- 鍒涘缓浣滃搧鏀惰棌琛?CREATE TABLE work_favorites (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     work_id UUID REFERENCES works(id) ON DELETE CASCADE,
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(work_id, user_id)  -- 确保一个用户只能收藏同一个作品一次
-);
+    UNIQUE(work_id, user_id)  -- 纭繚涓€涓敤鎴峰彧鑳芥敹钘忓悓涓€涓綔鍝佷竴娆?);
 */
 
-// 获取作品数据的函数 - 支持真实和模拟连接
-async function fetchWorksFromDatabase() {
+// 鑾峰彇浣滃搧鏁版嵁鐨勫嚱鏁?- 鏀寔鐪熷疄鍜屾ā鎷熻繛鎺?async function fetchWorksFromDatabase() {
     try {
         const saved = JSON.parse(localStorage.getItem('user_works') || '[]');
         const mocks = getMockWorks();
@@ -1651,81 +1622,79 @@ async function fetchWorksFromDatabase() {
     }
 }
 
-// 获取模拟作品数据的函数
-function getMockWorks() {
+// 鑾峰彇妯℃嫙浣滃搧鏁版嵁鐨勫嚱鏁?function getMockWorks() {
     return [
         {
             id: 'work-1',
-            title: '极简主义客厅',
-            description: '简约而不简单的设计理念，通过线条、色彩和空间的巧妙运用，打造出舒适宜人的生活环境。留白的艺术在这里得到了完美诠释，让每一件家具都成为空间的焦点。',
+            title: '鏋佺畝涓讳箟瀹㈠巺',
+            description: '绠€绾﹁€屼笉绠€鍗曠殑璁捐鐞嗗康锛岄€氳繃绾挎潯銆佽壊褰╁拰绌洪棿鐨勫阀濡欒繍鐢紝鎵撻€犲嚭鑸掗€傚疁浜虹殑鐢熸椿鐜銆傜暀鐧界殑鑹烘湳鍦ㄨ繖閲屽緱鍒颁簡瀹岀編璇犻噴锛岃姣忎竴浠跺鍏烽兘鎴愪负绌洪棿鐨勭劍鐐广€?,
             image_url: 'images/minimalist-livingroom.jpg',
             thumbnail_url: 'images/minimalist-livingroom.jpg',
-            style: '极简主义',
-            designer: 'Dimension Space 设计团队',
+            style: '鏋佺畝涓讳箟',
+            designer: 'Dimension Space 璁捐鍥㈤槦',
             created_at: '2024-01-15T00:00:00Z',
             updated_at: '2024-01-15T00:00:00Z',
             is_hidden: false,
             user_id: null,
-            category: '客厅'
+            category: '瀹㈠巺'
         },
         {
             id: 'work-2',
-            title: '装饰风格客厅',
-            description: '华丽的装饰元素与精致的细节，营造优雅高贵的空间氛围。金色线条、雕花装饰和质感十足的面料共同打造出一个充满艺术气息的生活空间。',
+            title: '瑁呴グ椋庢牸瀹㈠巺',
+            description: '鍗庝附鐨勮楗板厓绱犱笌绮捐嚧鐨勭粏鑺傦紝钀ラ€犱紭闆呴珮璐电殑绌洪棿姘涘洿銆傞噾鑹茬嚎鏉°€侀洉鑺辫楗板拰璐ㄦ劅鍗佽冻鐨勯潰鏂欏叡鍚屾墦閫犲嚭涓€涓厖婊¤壓鏈皵鎭殑鐢熸椿绌洪棿銆?,
             image_url: 'images/decorative-livingroom.jpg',
             thumbnail_url: 'images/decorative-livingroom.jpg',
-            style: '装饰风格',
-            designer: 'Dimension Space 设计团队',
+            style: '瑁呴グ椋庢牸',
+            designer: 'Dimension Space 璁捐鍥㈤槦',
             created_at: '2024-01-16T00:00:00Z',
             updated_at: '2024-01-16T00:00:00Z',
             is_hidden: false,
             user_id: null,
-            category: '客厅'
+            category: '瀹㈠巺'
         },
         {
             id: 'work-3',
-            title: '工业风厨房',
-            description: '粗犷与精致的碰撞，打造独特个性的烹饪空间。裸露的金属管道与实木橱柜形成鲜明对比，既保留了工业风格的原始感，又不失实用性和美观度。',
+            title: '宸ヤ笟椋庡帹鎴?,
+            description: '绮楃姺涓庣簿鑷寸殑纰版挒锛屾墦閫犵嫭鐗逛釜鎬х殑鐑归オ绌洪棿銆傝８闇茬殑閲戝睘绠￠亾涓庡疄鏈ㄦ┍鏌滃舰鎴愰矞鏄庡姣旓紝鏃繚鐣欎簡宸ヤ笟椋庢牸鐨勫師濮嬫劅锛屽張涓嶅け瀹炵敤鎬у拰缇庤搴︺€?,
             image_url: 'images/industrial-kitchen.jpg',
             thumbnail_url: 'images/industrial-kitchen.jpg',
-            style: '工业风',
-            designer: 'Dimension Space 设计团队',
+            style: '宸ヤ笟椋?,
+            designer: 'Dimension Space 璁捐鍥㈤槦',
             created_at: '2024-01-17T00:00:00Z',
             updated_at: '2024-01-17T00:00:00Z',
             is_hidden: false,
             user_id: null,
-            category: '厨房'
+            category: '鍘ㄦ埧'
         },
         {
             id: 'work-4',
-            title: '北欧风格卧室',
-            description: '轻盈通透的设计，自然光线与简约家具的完美结合。浅色木质地板、白色墙面和浅灰色家具共同营造出一个干净、明亮、舒适的睡眠环境。',
+            title: '鍖楁椋庢牸鍗у',
+            description: '杞荤泩閫氶€忕殑璁捐锛岃嚜鐒跺厜绾夸笌绠€绾﹀鍏风殑瀹岀編缁撳悎銆傛祬鑹叉湪璐ㄥ湴鏉裤€佺櫧鑹插闈㈠拰娴呯伆鑹插鍏峰叡鍚岃惀閫犲嚭涓€涓共鍑€銆佹槑浜€佽垝閫傜殑鐫＄湢鐜銆?,
             image_url: 'images/scandinavian-bedroom.jpg',
             thumbnail_url: 'images/scandinavian-bedroom.jpg',
-            style: '北欧风格',
-            designer: 'Dimension Space 设计团队',
+            style: '鍖楁椋庢牸',
+            designer: 'Dimension Space 璁捐鍥㈤槦',
             created_at: '2024-01-18T00:00:00Z',
             updated_at: '2024-01-18T00:00:00Z',
             is_hidden: false,
             user_id: null,
-            category: '卧室'
+            category: '鍗у'
         }
     ];
 }
 
-// 保存作品到数据库的函数（模拟实现）
-async function saveWorkToDatabase(workData) {
+// 淇濆瓨浣滃搧鍒版暟鎹簱鐨勫嚱鏁帮紙妯℃嫙瀹炵幇锛?async function saveWorkToDatabase(workData) {
     try {
         if (!currentUser) {
-            return { success: false, error: '用户未登录' };
+            return { success: false, error: '鐢ㄦ埛鏈櫥褰? };
         }
         
-        // 数据验证
+        // 鏁版嵁楠岃瘉
         if (!workData.title || !workData.image) {
-            return { success: false, error: '标题和图片是必填项' };
+            return { success: false, error: '鏍囬鍜屽浘鐗囨槸蹇呭～椤? };
         }
         
-        // 显示统一的加载状态指示器
+        // 鏄剧ず缁熶竴鐨勫姞杞界姸鎬佹寚绀哄櫒
         showLoadingIndicator();
         
         try {
@@ -1752,22 +1721,22 @@ async function saveWorkToDatabase(workData) {
             hideLoadingIndicator();
         }
     } catch (error) {
-        console.error('保存作品出错:', error);
-        // 确保在错误情况下也隐藏加载指示器
+        console.error('淇濆瓨浣滃搧鍑洪敊:', error);
+        // 纭繚鍦ㄩ敊璇儏鍐典笅涔熼殣钘忓姞杞芥寚绀哄櫒
         hideLoadingIndicator();
-        return { success: false, error: '系统错误：' + error.message };
+        return { success: false, error: '绯荤粺閿欒锛? + error.message };
     }
 }
 
-// 删除作品函数
+// 鍒犻櫎浣滃搧鍑芥暟
 async function deleteWork(workId) {
     try {
         if (!currentUser) {
-            alert('您需要登录才能删除作品');
+            alert('鎮ㄩ渶瑕佺櫥褰曟墠鑳藉垹闄や綔鍝?);
             return;
         }
         
-        if (!confirm(`确定要删除作品 ${workId} 吗？此操作不可撤销。`)) {
+        if (!confirm(`纭畾瑕佸垹闄や綔鍝?${workId} 鍚楋紵姝ゆ搷浣滀笉鍙挙閿€銆俙)) {
             return;
         }
         
@@ -1776,32 +1745,30 @@ async function deleteWork(workId) {
             const saved = JSON.parse(localStorage.getItem('user_works') || '[]');
             const filtered = saved.filter(w => w.id !== workId);
             localStorage.setItem('user_works', JSON.stringify(filtered));
-            alert(`作品 ${workId} 已成功删除！`);
+            alert(`浣滃搧 ${workId} 宸叉垚鍔熷垹闄わ紒`);
         } finally {
             hideLoadingIndicator();
         }
         
-        // 刷新作品列表
+        // 鍒锋柊浣滃搧鍒楄〃
         if (typeof refreshWorksList === 'function') {
             await refreshWorksList();
         }
     } catch (error) {
-        console.error('删除作品出错:', error);
-        // 确保在错误情况下也隐藏加载指示器
+        console.error('鍒犻櫎浣滃搧鍑洪敊:', error);
+        // 纭繚鍦ㄩ敊璇儏鍐典笅涔熼殣钘忓姞杞芥寚绀哄櫒
         hideLoadingIndicator();
-        alert('删除作品失败，请稍后重试');
+        alert('鍒犻櫎浣滃搧澶辫触锛岃绋嶅悗閲嶈瘯');
     }
 }
 
-// 切换作品可见性函数
-async function toggleWorkVisibility(workId, isHidden) {
+// 鍒囨崲浣滃搧鍙鎬у嚱鏁?async function toggleWorkVisibility(workId, isHidden) {
     try {
-        // 添加确认对话框
-        if (!confirm(`确定要${isHidden ? '隐藏' : '显示'}该作品吗？`)) {
+        // 娣诲姞纭瀵硅瘽妗?        if (!confirm(`纭畾瑕?{isHidden ? '闅愯棌' : '鏄剧ず'}璇ヤ綔鍝佸悧锛焋)) {
             return;
         }
         if (!currentUser) {
-            alert('您需要登录才能修改作品状态');
+            alert('鎮ㄩ渶瑕佺櫥褰曟墠鑳戒慨鏀逛綔鍝佺姸鎬?);
             return;
         }
         try {
@@ -1809,43 +1776,42 @@ async function toggleWorkVisibility(workId, isHidden) {
             const saved = JSON.parse(localStorage.getItem('user_works') || '[]');
             const updated = saved.map(w => w.id === workId ? { ...w, is_hidden: isHidden, updated_at: new Date().toISOString() } : w);
             localStorage.setItem('user_works', JSON.stringify(updated));
-            alert(`作品已成功${isHidden ? '隐藏' : '显示'}！`);
+            alert(`浣滃搧宸叉垚鍔?{isHidden ? '闅愯棌' : '鏄剧ず'}锛乣);
             if (typeof refreshWorksList === 'function') await refreshWorksList();
         } finally {
             hideLoadingIndicator();
         }
     } catch (error) {
-        console.error('切换作品可见性出错:', error);
-        // 确保在错误情况下也隐藏加载指示器
+        console.error('鍒囨崲浣滃搧鍙鎬у嚭閿?', error);
+        // 纭繚鍦ㄩ敊璇儏鍐典笅涔熼殣钘忓姞杞芥寚绀哄櫒
         hideLoadingIndicator();
-        alert(`操作失败: ${error.message || '请稍后重试'}`);
+        alert(`鎿嶄綔澶辫触: ${error.message || '璇风◢鍚庨噸璇?}`);
     }
 }
 
-// 更新作品信息函数
+// 鏇存柊浣滃搧淇℃伅鍑芥暟
 async function updateWork(workId, updatedData) {
     try {
         if (!currentUser) {
-            alert('您需要登录才能编辑作品');
+            alert('鎮ㄩ渶瑕佺櫥褰曟墠鑳界紪杈戜綔鍝?);
             return;
         }
         showLoadingIndicator();
         const saved = JSON.parse(localStorage.getItem('user_works') || '[]');
         const updated = saved.map(w => w.id === workId ? { ...w, ...updatedData, updated_at: new Date().toISOString() } : w);
         localStorage.setItem('user_works', JSON.stringify(updated));
-        alert(`作品 ${workId} 已更新！`);
+        alert(`浣滃搧 ${workId} 宸叉洿鏂帮紒`);
         if (typeof refreshWorksList === 'function') await refreshWorksList();
     } catch (error) {
-        console.error('更新作品出错:', error);
-        alert('更新作品失败，请稍后重试');
+        console.error('鏇存柊浣滃搧鍑洪敊:', error);
+        alert('鏇存柊浣滃搧澶辫触锛岃绋嶅悗閲嶈瘯');
     } finally {
-        // 隐藏加载状态指示器
+        // 闅愯棌鍔犺浇鐘舵€佹寚绀哄櫒
         hideLoadingIndicator();
     }
 }
 
-// 创建微信二维码气泡（修复版本）
-function createWechatQrCodeBubble() {
+// 鍒涘缓寰俊浜岀淮鐮佹皵娉★紙淇鐗堟湰锛?function createWechatQrCodeBubble() {
     try {
         const wechatLink = document.getElementById('wechat-link');
         if (!wechatLink) return;
@@ -1854,7 +1820,7 @@ function createWechatQrCodeBubble() {
         bubble = document.createElement('div');
         bubble.id = 'wechat-qrcode-bubble';
         bubble.className = 'qrcode-bubble';
-        bubble.innerHTML = "<div class='qrcode-content'><img src=\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><rect width='120' height='120' fill='white'/><rect x='8' y='8' width='28' height='28' fill='black'/><rect x='16' y='16' width='12' height='12' fill='white'/><rect x='84' y='8' width='28' height='28' fill='black'/><rect x='92' y='16' width='12' height='12' fill='white'/><rect x='8' y='84' width='28' height='28' fill='black'/><rect x='16' y='92' width='12' height='12' fill='white'/><rect x='44' y='44' width='12' height='12' fill='black'/><rect x='64' y='44' width='8' height='8' fill='black'/><rect x='52' y='64' width='10' height='10' fill='black'/><rect x='72' y='72' width='14' height='14' fill='black'/></svg>\" alt='微信二维码' class='qrcode-image'><p class='qrcode-text'>扫码添加微信</p></div><div class=\"bubble-arrow\"></div>";
+        bubble.innerHTML = "<div class='qrcode-content'><img src=\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><rect width='120' height='120' fill='white'/><rect x='8' y='8' width='28' height='28' fill='black'/><rect x='16' y='16' width='12' height='12' fill='white'/><rect x='84' y='8' width='28' height='28' fill='black'/><rect x='92' y='16' width='12' height='12' fill='white'/><rect x='8' y='84' width='28' height='28' fill='black'/><rect x='16' y='92' width='12' height='12' fill='white'/><rect x='44' y='44' width='12' height='12' fill='black'/><rect x='64' y='44' width='8' height='8' fill='black'/><rect x='52' y='64' width='10' height='10' fill='black'/><rect x='72' y='72' width='14' height='14' fill='black'/></svg>\" alt='寰俊浜岀淮鐮? class='qrcode-image'><p class='qrcode-text'>鎵爜娣诲姞寰俊</p></div><div class=\"bubble-arrow\"></div>";
         document.body.appendChild(bubble);
         let showTimer = null;
         let hideTimer = null;
@@ -1931,38 +1897,38 @@ function createWechatQrCodeBubble() {
             }
         });
     } catch (error) {
-        console.error('创建微信二维码气泡出错:', error);
+        console.error('鍒涘缓寰俊浜岀淮鐮佹皵娉″嚭閿?', error);
     }
 }
 
-// 创建默认服务模态框（作为备份）
+// 鍒涘缓榛樿鏈嶅姟妯℃€佹锛堜綔涓哄浠斤級
 function createDefaultServicesModal() {
     try {
         const modalHTML = `
         <div id="services-modal" class="modal" style="display: none;">
             <div class="modal-content">
-                <h3>我们的服务</h3>
+                <h3>鎴戜滑鐨勬湇鍔?/h3>
                 <div class="services-content">
                     <div class="service-item">
-                        <h4>室内设计</h4>
-                        <p>专业的室内设计团队，为您打造舒适、美观的生活空间。</p>
+                        <h4>瀹ゅ唴璁捐</h4>
+                        <p>涓撲笟鐨勫鍐呰璁″洟闃燂紝涓烘偍鎵撻€犺垝閫傘€佺編瑙傜殑鐢熸椿绌洪棿銆?/p>
                     </div>
                     <div class="service-item">
-                        <h4>空间规划</h4>
-                        <p>科学合理的空间规划，最大化利用每一寸空间。</p>
+                        <h4>绌洪棿瑙勫垝</h4>
+                        <p>绉戝鍚堢悊鐨勭┖闂磋鍒掞紝鏈€澶у寲鍒╃敤姣忎竴瀵哥┖闂淬€?/p>
                     </div>
                     <div class="service-item">
-                        <h4>装修施工</h4>
-                        <p>严格的施工标准，确保工程质量和进度。</p>
+                        <h4>瑁呬慨鏂藉伐</h4>
+                        <p>涓ユ牸鐨勬柦宸ユ爣鍑嗭紝纭繚宸ョ▼璐ㄩ噺鍜岃繘搴︺€?/p>
                     </div>
                 </div>
-                <button id="close-services-modal" class="close-modal-btn glass-button">关闭</button>
+                <button id="close-services-modal" class="close-modal-btn glass-button">鍏抽棴</button>
             </div>
         </div>`;
         
         document.body.insertAdjacentHTML('beforeend', modalHTML);
         
-        // 添加关闭事件
+        // 娣诲姞鍏抽棴浜嬩欢
         const closeBtn = document.getElementById('close-services-modal');
         if (closeBtn) {
             closeBtn.addEventListener('click', function() {
@@ -1970,99 +1936,92 @@ function createDefaultServicesModal() {
             });
         }
         
-        console.log('创建了默认服务模态框');
+        console.log('鍒涘缓浜嗛粯璁ゆ湇鍔℃ā鎬佹');
     } catch (error) {
-        console.error('创建默认服务模态框出错:', error);
+        console.error('鍒涘缓榛樿鏈嶅姟妯℃€佹鍑洪敊:', error);
     }
 }
 
-// 导航栏滚动效果
-window.addEventListener('scroll', function() {
+// 瀵艰埅鏍忔粴鍔ㄦ晥鏋?window.addEventListener('scroll', function() {
     try {
         const navbar = document.querySelector('.navbar');
         if (navbar) {
             navbar.classList.toggle('scrolled', window.scrollY > 10);
         }
     } catch (error) {
-        console.error('导航栏滚动效果出错:', error);
+        console.error('瀵艰埅鏍忔粴鍔ㄦ晥鏋滃嚭閿?', error);
     }
 }, { passive: true });
 
-// 处理联系表单提交
+// 澶勭悊鑱旂郴琛ㄥ崟鎻愪氦
 async function handleContactFormSubmit(event) {
     event.preventDefault();
     
-    // 获取表单数据
+    // 鑾峰彇琛ㄥ崟鏁版嵁
     const name = document.getElementById('contact-name').value;
     const phone = document.getElementById('contact-phone').value;
     const message = document.getElementById('contact-message').value;
     
-    // 简单验证
-    if (!name || !phone || !message) {
-        alert('请填写所有必填字段');
+    // 绠€鍗曢獙璇?    if (!name || !phone || !message) {
+        alert('璇峰～鍐欐墍鏈夊繀濉瓧娈?);
         return;
     }
     
-    // 显示加载状态指示器
+    // 鏄剧ず鍔犺浇鐘舵€佹寚绀哄櫒
     showLoadingIndicator();
     
     try {
         const sb = getSupabaseClient();
-        if (!sb) { alert('服务暂不可用，请稍后再试'); return; }
+        if (!sb) { alert('鏈嶅姟鏆備笉鍙敤锛岃绋嶅悗鍐嶈瘯'); return; }
         const u = await sb.auth.getUser();
-        if (u.error || !u.data?.user?.email) { alert('请先登录后再提交信息'); return; }
+        if (u.error || !u.data?.user?.email) { alert('璇峰厛鐧诲綍鍚庡啀鎻愪氦淇℃伅'); return; }
         const resp = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, phone, message, from: u.data.user.email }) });
-        if (!resp.ok) { const j = await resp.json().catch(()=>({})); alert(j?.error || '发送失败，请稍后重试'); return; }
-        alert('已发送，我们会尽快联系您');
+        if (!resp.ok) { const j = await resp.json().catch(()=>({})); alert(j?.error || '鍙戦€佸け璐ワ紝璇风◢鍚庨噸璇?); return; }
+        alert('宸插彂閫侊紝鎴戜滑浼氬敖蹇仈绯绘偍');
         event.target.reset();
     } finally {
         hideLoadingIndicator();
     }
 }
 
-// 初始化页面
-async function initPage() {
+// 鍒濆鍖栭〉闈?async function initPage() {
     try {
-        console.log('开始页面初始化...');
+        console.log('寮€濮嬮〉闈㈠垵濮嬪寲...');
         
-        // 显示加载状态指示器
+        // 鏄剧ず鍔犺浇鐘舵€佹寚绀哄櫒
         showLoadingIndicator();
         
-        // 恢复本地会话
+        // 鎭㈠鏈湴浼氳瘽
         const saved = loadSession();
         if (saved) { currentUser = saved; }
-        // 初始化认证功能
-        initAuth();
+        // 鍒濆鍖栬璇佸姛鑳?        initAuth();
         
-        // 创建微信二维码气泡（修复版本）
-        createWechatQrCodeBubble();
+        // 鍒涘缓寰俊浜岀淮鐮佹皵娉★紙淇鐗堟湰锛?        createWechatQrCodeBubble();
         
-        // 初始化用户登录状态UI
+        // 鍒濆鍖栫敤鎴风櫥褰曠姸鎬乁I
         updateUIForLoggedInState();
         
-        // 初始化作品管理功能 - 等待完成
+        // 鍒濆鍖栦綔鍝佺鐞嗗姛鑳?- 绛夊緟瀹屾垚
         await initWorksManagement();
         
-        console.log('页面初始化完成');
+        console.log('椤甸潰鍒濆鍖栧畬鎴?);
         
-        // 页面初始化完成后隐藏加载状态指示器
+        // 椤甸潰鍒濆鍖栧畬鎴愬悗闅愯棌鍔犺浇鐘舵€佹寚绀哄櫒
         hideLoadingIndicator();
         
-        // 1. 浏览作品按钮 - 平滑滚动到精选作品区域
-        const browseWorksBtn = document.getElementById('browse-works-btn');
+        // 1. 娴忚浣滃搧鎸夐挳 - 骞虫粦婊氬姩鍒扮簿閫変綔鍝佸尯鍩?        const browseWorksBtn = document.getElementById('browse-works-btn');
         if (browseWorksBtn) {
-            // 移除可能存在的旧事件监听器
-            const newBrowseWorksBtn = browseWorksBtn.cloneNode(true);
+            // 绉婚櫎鍙兘瀛樺湪鐨勬棫浜嬩欢鐩戝惉鍣?            const newBrowseWorksBtn = browseWorksBtn.cloneNode(true);
             browseWorksBtn.parentNode.replaceChild(newBrowseWorksBtn, browseWorksBtn);
             
             newBrowseWorksBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                console.log('点击了浏览作品按钮');
-                smoothScrollTo('works', 80); // 80px的偏移量，避免导航栏遮挡
+                console.log('鐐瑰嚮浜嗘祻瑙堜綔鍝佹寜閽?);
+                smoothScrollTo('works', 80); // 80px鐨勫亸绉婚噺锛岄伩鍏嶅鑸爮閬尅
             });
         }
         
-        // 2. 了解服务按钮 - 显示服务模态框
+        // 2. 浜嗚В鏈嶅姟鎸夐挳 - 鏄剧ず鏈嶅姟妯℃€佹
         const servicesBtn = document.getElementById('services-btn');
         const closeServicesModal = document.getElementById('close-services-modal');
         
@@ -2072,10 +2031,10 @@ async function initPage() {
             
             newServicesBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                console.log('点击了了解服务按钮');
-                // 确保服务模态框存在
+                console.log('鐐瑰嚮浜嗕簡瑙ｆ湇鍔℃寜閽?);
+                // 纭繚鏈嶅姟妯℃€佹瀛樺湪
                 if (!document.getElementById('services-modal')) {
-                    console.warn('服务模态框不存在，创建默认模态框');
+                    console.warn('鏈嶅姟妯℃€佹涓嶅瓨鍦紝鍒涘缓榛樿妯℃€佹');
                     createDefaultServicesModal();
                 }
                 showModal('services-modal');
@@ -2089,7 +2048,7 @@ async function initPage() {
             });
         }
         
-        // 3. 登录按钮 - 显示登录注册模态框
+        // 3. 鐧诲綍鎸夐挳 - 鏄剧ず鐧诲綍娉ㄥ唽妯℃€佹
         const loginBtn = document.getElementById('login-btn');
         
         if (loginBtn) {
@@ -2098,14 +2057,13 @@ async function initPage() {
             
             newLoginBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                console.log('点击了登录按钮');
+                console.log('鐐瑰嚮浜嗙櫥褰曟寜閽?);
                 showModal('auth-modal');
                 setTimeout(() => attachLiquidGlassToAuthModal(), 0);
             });
         }
         
-        // 4. 预约咨询按钮 - 平滑滚动到联系我们区域
-        const appointmentBtn = document.getElementById('appointment-btn');
+        // 4. 棰勭害鍜ㄨ鎸夐挳 - 骞虫粦婊氬姩鍒拌仈绯绘垜浠尯鍩?        const appointmentBtn = document.getElementById('appointment-btn');
         
         if (appointmentBtn) {
             const newAppointmentBtn = appointmentBtn.cloneNode(true);
@@ -2113,7 +2071,7 @@ async function initPage() {
             
             newAppointmentBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                console.log('点击了预约咨询按钮');
+                console.log('鐐瑰嚮浜嗛绾﹀挩璇㈡寜閽?);
                 const nav = document.querySelector('.navbar');
                 const offset = nav ? nav.getBoundingClientRect().height + 10 : 80;
                 smoothScrollTo('contact', offset, () => highlightSection('contact'));
@@ -2150,184 +2108,173 @@ async function initPage() {
         });
         
     } catch (error) {
-        console.error('页面初始化出错:', error);
-        // 隐藏加载状态指示器
+        console.error('椤甸潰鍒濆鍖栧嚭閿?', error);
+        // 闅愯棌鍔犺浇鐘舵€佹寚绀哄櫒
         hideLoadingIndicator();
-        // 显示错误信息
-        alert('页面加载失败，请刷新页面重试');
+        // 鏄剧ず閿欒淇℃伅
+        alert('椤甸潰鍔犺浇澶辫触锛岃鍒锋柊椤甸潰閲嶈瘯');
     }
 }
 
-// 初始化作品管理功能
-async function initWorksManagement() {
+// 鍒濆鍖栦綔鍝佺鐞嗗姛鑳?async function initWorksManagement() {
     try {
-        // 创建作品详情模态框
+        // 鍒涘缓浣滃搧璇︽儏妯℃€佹
         createWorkDetailModal();
         
-        // 创建编辑作品模态框
+        // 鍒涘缓缂栬緫浣滃搧妯℃€佹
         createEditWorkModal();
         
-        // 加载并显示作品
-        await loadAndDisplayWorks();
+        // 鍔犺浇骞舵樉绀轰綔鍝?        await loadAndDisplayWorks();
         
     } catch (error) {
-        console.error('初始化作品管理功能出错:', error);
+        console.error('鍒濆鍖栦綔鍝佺鐞嗗姛鑳藉嚭閿?', error);
     }
 }
 
-// 加载并显示作品
-async function loadAndDisplayWorks() {
+// 鍔犺浇骞舵樉绀轰綔鍝?async function loadAndDisplayWorks() {
     try {
-        console.log('开始加载作品...');
+        console.log('寮€濮嬪姞杞戒綔鍝?..');
         
-        // 显示加载指示器
-        showLoadingIndicator();
+        // 鏄剧ず鍔犺浇鎸囩ず鍣?        showLoadingIndicator();
         
         let works = [];
         
-        // 尝试从数据库获取作品
+        // 灏濊瘯浠庢暟鎹簱鑾峰彇浣滃搧
         try {
             works = await fetchWorksFromDatabase();
         } catch (dbError) {
-            console.warn('数据库加载失败，使用模拟数据:', dbError);
+            console.warn('鏁版嵁搴撳姞杞藉け璐ワ紝浣跨敤妯℃嫙鏁版嵁:', dbError);
             works = getMockWorks();
         }
         
-        console.log('获取到的作品数量:', works.length);
+        console.log('鑾峰彇鍒扮殑浣滃搧鏁伴噺:', works.length);
         
-        // 显示精选作品（公开的作品）
+        // 鏄剧ず绮鹃€変綔鍝侊紙鍏紑鐨勪綔鍝侊級
         displayFeaturedWorks(works);
         
-        // 如果用户已登录，显示用户的所有作品（包括隐藏的）
+        // 濡傛灉鐢ㄦ埛宸茬櫥褰曪紝鏄剧ず鐢ㄦ埛鐨勬墍鏈変綔鍝侊紙鍖呮嫭闅愯棌鐨勶級
         if (isUserLoggedIn()) {
             displayUserWorks(works);
         }
         
-        // 设置作品项的点击事件
+        // 璁剧疆浣滃搧椤圭殑鐐瑰嚮浜嬩欢
         setupWorkItemClickEvents();
         
     } catch (error) {
-        console.error('加载作品出错:', error);
-        alert('加载作品失败，请稍后重试');
+        console.error('鍔犺浇浣滃搧鍑洪敊:', error);
+        alert('鍔犺浇浣滃搧澶辫触锛岃绋嶅悗閲嶈瘯');
     } finally {
-        // 隐藏加载指示器
-        hideLoadingIndicator();
+        // 闅愯棌鍔犺浇鎸囩ず鍣?        hideLoadingIndicator();
     }
 }
 
-// 显示精选作品（公开状态的作品）
-function displayFeaturedWorks(works) {
+// 鏄剧ず绮鹃€変綔鍝侊紙鍏紑鐘舵€佺殑浣滃搧锛?function displayFeaturedWorks(works) {
     try {
-        // 筛选公开状态的作品
+        // 绛涢€夊叕寮€鐘舵€佺殑浣滃搧
         const publicWorks = works.filter(work => !work.is_hidden);
-        console.log('筛选出的公开作品数量:', publicWorks.length);
+        console.log('绛涢€夊嚭鐨勫叕寮€浣滃搧鏁伴噺:', publicWorks.length);
         
-        // 获取精选作品容器
-        const featuredWorksContainer = document.querySelector('#works .works-grid');
+        // 鑾峰彇绮鹃€変綔鍝佸鍣?        const featuredWorksContainer = document.querySelector('#works .works-grid');
         if (!featuredWorksContainer) {
-            console.warn('精选作品容器不存在');
+            console.warn('绮鹃€変綔鍝佸鍣ㄤ笉瀛樺湪');
             return;
         }
         
-        // 清空容器内容
+        // 娓呯┖瀹瑰櫒鍐呭
         featuredWorksContainer.innerHTML = '';
         
-        // 如果没有公开作品，显示提示信息
-        if (publicWorks.length === 0) {
+        // 濡傛灉娌℃湁鍏紑浣滃搧锛屾樉绀烘彁绀轰俊鎭?        if (publicWorks.length === 0) {
             featuredWorksContainer.innerHTML = `
                 <div class="no-works-message">
-                    <p>当前暂无精选作品</p>
-                    <p>敬请期待更多精彩内容！</p>
+                    <p>褰撳墠鏆傛棤绮鹃€変綔鍝?/p>
+                    <p>鏁鏈熷緟鏇村绮惧僵鍐呭锛?/p>
                 </div>
             `;
             return;
         }
         
-        // 创建并添加作品项
+        // 鍒涘缓骞舵坊鍔犱綔鍝侀」
         publicWorks.forEach(work => {
             const workItem = createWorkItem(work);
             featuredWorksContainer.appendChild(workItem);
         });
         
     } catch (error) {
-        console.error('显示精选作品出错:', error);
+        console.error('鏄剧ず绮鹃€変綔鍝佸嚭閿?', error);
     }
 }
 
-// 显示用户作品（包括隐藏的）
-function displayUserWorks(works) {
+// 鏄剧ず鐢ㄦ埛浣滃搧锛堝寘鎷殣钘忕殑锛?function displayUserWorks(works) {
     try {
-        // 检查用户作品容器是否存在，如果不存在则创建
+        // 妫€鏌ョ敤鎴蜂綔鍝佸鍣ㄦ槸鍚﹀瓨鍦紝濡傛灉涓嶅瓨鍦ㄥ垯鍒涘缓
         let userWorksSection = document.getElementById('user-works');
         if (!userWorksSection) {
-            // 创建用户作品区域
+            // 鍒涘缓鐢ㄦ埛浣滃搧鍖哄煙
             userWorksSection = document.createElement('section');
             userWorksSection.id = 'user-works';
             userWorksSection.className = 'works-section user-works-section';
             
             userWorksSection.innerHTML = `
-                <h2 class="section-title">我的作品</h2>
+                <h2 class="section-title">鎴戠殑浣滃搧</h2>
                 <div class="works-grid works-list"></div>
             `;
             
-            // 插入到精选作品区域之后
-            const worksSection = document.getElementById('works');
+            // 鎻掑叆鍒扮簿閫変綔鍝佸尯鍩熶箣鍚?            const worksSection = document.getElementById('works');
             if (worksSection) {
                 worksSection.after(userWorksSection);
             }
         }
         
-        // 筛选当前用户的作品
+        // 绛涢€夊綋鍓嶇敤鎴风殑浣滃搧
         const userWorks = works.filter(work => work.user_id === currentUser.id);
-        console.log('用户作品数量:', userWorks.length);
+        console.log('鐢ㄦ埛浣滃搧鏁伴噺:', userWorks.length);
         
-        // 更新容器标题
+        // 鏇存柊瀹瑰櫒鏍囬
         const userWorksTitle = userWorksSection.querySelector('.section-title');
         if (userWorksTitle) {
-            userWorksTitle.textContent = `我的作品 (${userWorks.length})`;
+            userWorksTitle.textContent = `鎴戠殑浣滃搧 (${userWorks.length})`;
         }
         
-        // 获取作品列表容器
+        // 鑾峰彇浣滃搧鍒楄〃瀹瑰櫒
         const worksListContainer = userWorksSection.querySelector('.works-list');
         if (!worksListContainer) {
-            console.warn('作品列表容器不存在');
+            console.warn('浣滃搧鍒楄〃瀹瑰櫒涓嶅瓨鍦?);
             return;
         }
         
-        // 清空容器内容
+        // 娓呯┖瀹瑰櫒鍐呭
         worksListContainer.innerHTML = '';
         
-        // 如果没有作品，显示提示信息
-        if (userWorks.length === 0) {
+        // 濡傛灉娌℃湁浣滃搧锛屾樉绀烘彁绀轰俊鎭?        if (userWorks.length === 0) {
             worksListContainer.innerHTML = `
                 <div class="no-works-message">
-                    <p>您还没有创建任何作品</p>
-                    <button class="create-first-work-btn">创建我的第一个作品</button>
+                    <p>鎮ㄨ繕娌℃湁鍒涘缓浠讳綍浣滃搧</p>
+                    <button class="create-first-work-btn">鍒涘缓鎴戠殑绗竴涓綔鍝?/button>
                 </div>
             `;
             
-            // 添加创建作品按钮事件
+            // 娣诲姞鍒涘缓浣滃搧鎸夐挳浜嬩欢
             const createBtn = worksListContainer.querySelector('.create-first-work-btn');
             if (createBtn) {
                 createBtn.addEventListener('click', function() {
-                    // 这里可以打开创建作品的模态框
-                    alert('创建作品功能即将上线');
+                    // 杩欓噷鍙互鎵撳紑鍒涘缓浣滃搧鐨勬ā鎬佹
+                    alert('鍒涘缓浣滃搧鍔熻兘鍗冲皢涓婄嚎');
                 });
             }
             
             return;
         }
         
-        // 创建并添加作品项，包括公开和隐藏的
+        // 鍒涘缓骞舵坊鍔犱綔鍝侀」锛屽寘鎷叕寮€鍜岄殣钘忕殑
         userWorks.forEach(work => {
             const workItem = createWorkItem(work);
             
-            // 为隐藏的作品添加特殊标记
+            // 涓洪殣钘忕殑浣滃搧娣诲姞鐗规畩鏍囪
             if (work.is_hidden) {
                 const hiddenBadge = document.createElement('span');
                 hiddenBadge.className = 'work-hidden-badge';
-                hiddenBadge.textContent = '已隐藏';
-                hiddenBadge.title = '此作品仅对您可见';
+                hiddenBadge.textContent = '宸查殣钘?;
+                hiddenBadge.title = '姝や綔鍝佷粎瀵规偍鍙';
                 workItem.appendChild(hiddenBadge);
             }
             
@@ -2335,29 +2282,29 @@ function displayUserWorks(works) {
         });
         
     } catch (error) {
-        console.error('显示用户作品出错:', error);
+        console.error('鏄剧ず鐢ㄦ埛浣滃搧鍑洪敊:', error);
     }
 }
 
-// 创建作品项DOM元素
+// 鍒涘缓浣滃搧椤笵OM鍏冪礌
 function createWorkItem(work) {
     const workItem = document.createElement('div');
     workItem.className = 'work-item';
     workItem.dataset.workId = work.id;
     
-    // 作品卡片HTML结构
+    // 浣滃搧鍗＄墖HTML缁撴瀯
     workItem.innerHTML = `
         <div class="work-image">
-            <img src="${work.image_url || work.image || 'https://via.placeholder.com/400x300?text=作品图片'}" 
-                 alt="${work.title || '作品图片'}" 
+            <img src="${work.image_url || work.image || 'https://via.placeholder.com/400x300?text=浣滃搧鍥剧墖'}" 
+                 alt="${work.title || '浣滃搧鍥剧墖'}" 
                  class="work-image">
         </div>
         <div class="work-info">
-            <h3 class="work-title">${work.title || '未命名作品'}</h3>
-            <p class="work-description">${work.description || '暂无描述'}</p>
+            <h3 class="work-title">${work.title || '鏈懡鍚嶄綔鍝?}</h3>
+            <p class="work-description">${work.description || '鏆傛棤鎻忚堪'}</p>
             <div class="work-meta">
                 <span class="work-date">${work.created_at ? formatDate(work.created_at) : (work.date || '')}</span>
-                <span class="work-category">${work.category || '未分类'}</span>
+                <span class="work-category">${work.category || '鏈垎绫?}</span>
             </div>
         </div>
     `;
@@ -2365,41 +2312,39 @@ function createWorkItem(work) {
     return workItem;
 }
 
-// 刷新作品列表（在作品操作后调用）
+// 鍒锋柊浣滃搧鍒楄〃锛堝湪浣滃搧鎿嶄綔鍚庤皟鐢級
 async function refreshWorksList() {
     try {
-        console.log('刷新作品列表...');
-        // 显示加载状态指示器
+        console.log('鍒锋柊浣滃搧鍒楄〃...');
+        // 鏄剧ず鍔犺浇鐘舵€佹寚绀哄櫒
         showLoadingIndicator();
         await loadAndDisplayWorks();
     } catch (error) {
-        console.error('刷新作品列表出错:', error);
-        alert('刷新作品列表失败，请稍后重试');
+        console.error('鍒锋柊浣滃搧鍒楄〃鍑洪敊:', error);
+        alert('鍒锋柊浣滃搧鍒楄〃澶辫触锛岃绋嶅悗閲嶈瘯');
     } finally {
-        // 确保隐藏加载状态指示器
+        // 纭繚闅愯棌鍔犺浇鐘舵€佹寚绀哄櫒
         hideLoadingIndicator();
     }
 }
 
-// 当DOM加载完成后初始化页面
+// 褰揇OM鍔犺浇瀹屾垚鍚庡垵濮嬪寲椤甸潰
 document.addEventListener('DOMContentLoaded', async function() {
-    console.log('DOM内容加载完成');
+    console.log('DOM鍐呭鍔犺浇瀹屾垚');
     
     var buttons = document.querySelectorAll('button');
     
     
-    // 初始化表单验证
-    setupFormValidation();
+    // 鍒濆鍖栬〃鍗曢獙璇?    setupFormValidation();
     
     try {
         await initPage();
     } catch (error) {
-        console.error('页面初始化失败:', error);
-        alert('页面加载时出现错误，请刷新页面重试');
+        console.error('椤甸潰鍒濆鍖栧け璐?', error);
+        alert('椤甸潰鍔犺浇鏃跺嚭鐜伴敊璇紝璇峰埛鏂伴〉闈㈤噸璇?);
     }
     
-    // 为联系表单添加提交事件监听
-    const contactForm = document.querySelector('.contact-form');
+    // 涓鸿仈绯昏〃鍗曟坊鍔犳彁浜や簨浠剁洃鍚?    const contactForm = document.querySelector('.contact-form');
     if (contactForm) {
         contactForm.addEventListener('submit', handleContactFormSubmit);
     }
@@ -2410,18 +2355,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         newLink.addEventListener('click', async function(e) {
             e.preventDefault();
             const email = document.getElementById('login-email')?.value.trim();
-            if (!email || !isValidEmail(email)) { showAuthError('请输入有效的邮箱地址'); return; }
+            if (!email || !isValidEmail(email)) { showAuthError('璇疯緭鍏ユ湁鏁堢殑閭鍦板潃'); return; }
             if (PREVIEW_MODE) {
                 const el = document.getElementById('auth-error');
-                if (el) { el.textContent = '预览环境不支持密码重置'; el.className = 'success-message'; el.style.display = 'block'; }
+                if (el) { el.textContent = '棰勮鐜涓嶆敮鎸佸瘑鐮侀噸缃?; el.className = 'success-message'; el.style.display = 'block'; }
                 return;
             }
             showLoadingIndicator();
             try {
                 const resp = await fetch(`${API_BASE}/api/auth/request-reset`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
-                if (!resp.ok) { showAuthError('重置请求失败，请稍后重试'); return; }
+                if (!resp.ok) { showAuthError('閲嶇疆璇锋眰澶辫触锛岃绋嶅悗閲嶈瘯'); return; }
                 const el = document.getElementById('auth-error');
-                if (el) { el.textContent = '已发送重置邮件（有效期1小时）'; el.className = 'success-message'; el.style.display = 'block'; }
+                if (el) { el.textContent = '宸插彂閫侀噸缃偖浠讹紙鏈夋晥鏈?灏忔椂锛?; el.className = 'success-message'; el.style.display = 'block'; }
             } finally { hideLoadingIndicator(); }
         });
     }
@@ -2455,10 +2400,10 @@ async function initWorksImages(sbClient) {
     if (!sb) return;
     const selectors = Array.from(document.querySelectorAll('.works-grid .work-item img')).slice(0,4);
     const localFiles = [
-        'images/AI 记账 APP 原型设计 (1).png',
-        'images/AI 记账 APP 原型设计 (2).png',
-        'images/AI 记账 APP 原型设计 (3).png',
-        'images/AI 记账 APP 原型设计.png'
+        'images/AI 璁拌处 APP 鍘熷瀷璁捐 (1).png',
+        'images/AI 璁拌处 APP 鍘熷瀷璁捐 (2).png',
+        'images/AI 璁拌处 APP 鍘熷瀷璁捐 (3).png',
+        'images/AI 璁拌处 APP 鍘熷瀷璁捐.png'
     ];
     for (let i = 0; i < Math.min(selectors.length, localFiles.length); i++) {
         const imgEl = selectors[i];
@@ -2478,20 +2423,27 @@ async function initWorksImages(sbClient) {
 function runCoreUnitTests() {
     const results = [];
     const assert = (name, ok) => results.push({ name, ok });
-    assert('validatePhone 正确', validatePhone('17772297239') === true);
-    assert('validatePhone 错误', validatePhone('12345') === false);
-    assert('validateNickname 边界', validateNickname('ab') === true && validateNickname('a') === false);
+    assert('validatePhone 姝ｇ‘', validatePhone('17772297239') === true);
+    assert('validatePhone 閿欒', validatePhone('12345') === false);
+    assert('validateNickname 杈圭晫', validateNickname('ab') === true && validateNickname('a') === false);
     const contact = document.getElementById('contact');
     if (contact) {
         const startY = window.pageYOffset;
         smoothScrollTo('contact', 0, () => {
             const afterY = window.pageYOffset;
-            assert('smoothScrollTo 移动', Math.abs(afterY - startY) > 0);
+            assert('smoothScrollTo 绉诲姩', Math.abs(afterY - startY) > 0);
         });
     }
-    console.log('单元测试结果:', results);
+    console.log('鍗曞厓娴嬭瘯缁撴灉:', results);
 }
 
 if (location.search.includes('runTests')) {
     setTimeout(runCoreUnitTests, 500);
 }
+
+try {
+    var si = document.createElement('script');
+    si.src = '/_vercel/speed-insights/script.js';
+    si.defer = true;
+    document.body.appendChild(si);
+} catch (_) {}
