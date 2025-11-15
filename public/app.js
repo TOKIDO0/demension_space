@@ -2,8 +2,8 @@
 console.log('app.js 鍔犺浇鎴愬姛');
 
 const API_BASE = '';
-const SUPABASE_URL = 'https://afrasbvtsucsmddcdusi.supabase.co';
-let SUPABASE_ANON_KEY = (typeof window !== 'undefined' && window.SUPABASE_ANON_KEY) ? window.SUPABASE_ANON_KEY : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmcmFzYnZ0c3Vjc21kZGNkdXNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3OTkzMDgsImV4cCI6MjA3ODM3NTMwOH0.CBeNwfTUNs1gPwhgiDDvP1N1B1_Lzya8fnYJzDSwbdM';
+const SUPABASE_URL = '';
+let SUPABASE_ANON_KEY = (typeof window !== 'undefined' && window.SUPABASE_ANON_KEY) ? window.SUPABASE_ANON_KEY : '';
 function getSupabaseClient(){ try { const url = (typeof window !== 'undefined' && window.SUPABASE_URL) ? window.SUPABASE_URL : SUPABASE_URL; if (!window.supabase || !url || !SUPABASE_ANON_KEY) return null; return window.supabase.createClient(url, SUPABASE_ANON_KEY); } catch(_) { return null; } }
 const PREVIEW_MODE = false;
 const FRONTEND_ONLY = !API_BASE;
